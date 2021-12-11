@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import './App.css';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
-import * as smartContract from './index.main.mjs';
+import * as backend from './index.main.mjs';
 
 var devnet = false;
+
+
 
 const reach = loadStdlib(devnet ? 'ALGO-devnet' : 'ALGO')
 
@@ -35,9 +37,19 @@ class App extends Component {
   }
 
   async deploy() {
-    let ctc = acct.contract(smartContract);
-    console.log(ctc)
-    console.log("deployed")
+
+    const accAlice = acct
+    const ctcAlice = accAlice.deploy(backend);
+
+    try {
+      await Promise.all([
+        backend.Alice(ctcAlice, {
+          ...undefined,
+          wager: reach.parseCurrency(5),
+          ...reach.hasConsoleLogger,
+        }),])
+    }
+    catch (error) { console.log(error) }
   }
 
   render() {

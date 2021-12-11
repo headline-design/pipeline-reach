@@ -34,21 +34,22 @@ class App extends Component {
     }
   }
 
-  async deploy () {
-    let ctc = acct.deploy(smartContract);
-    const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
-    console.log(ctcInfoStr)
+  async deploy() {
+    let ctc = acct.contract(smartContract);
+    console.log(ctc)
+    console.log("deployed")
   }
 
   render() {
     return (
       <div className="reach" align="center">
         <button onClick={() => reach.getDefaultAccount().then(data2 => {
-              acct = data2;
-              this.setState({address: acct.networkAccount.addr})
-              console.log(acct);
-            })
-          }>Connect</button>
+          let address = data2.networkAccount.addr;
+          acct = data2;
+          this.setState({ address: address })
+          console.log(acct);
+        })
+        }>Connect</button>
         <h3>{this.state.address}</h3>
         <button onClick={this.deploy}>Deploy</button>
       </div>

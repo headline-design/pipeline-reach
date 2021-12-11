@@ -35,8 +35,9 @@ class App extends Component {
   }
 
   async deploy () {
-    let ctc = await acct.contract(smartContract)
-    console.log(ctc)
+    let ctc = acct.deploy(smartContract);
+    const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
+    console.log(ctcInfoStr)
   }
 
   render() {

@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import './App.css';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
-import * as backend from './index.main.mjs';
+
+var contractName = "Morra Game"
+
+var backend = undefined
 
 var devnet = false;
-
-
 
 const reach = loadStdlib(devnet ? 'ALGO-devnet' : 'ALGO')
 
@@ -27,34 +28,55 @@ reach.setWalletFallback(reach.walletFallback({
   providerEnv: 'MainNet', MyAlgoConnect
 }));
 
+const contracts = {
+  "Morra Game": {
+    contract: require('./index.main.mjs'),
+    description: 'Game of two players guessing "fingers"',
+    interact: {...undefined,
+      wager: reach.parseCurrency(0.001),
+      ...reach.hasConsoleLogger}
+  }
+}
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      address: ""
+      address: "",
+      description: ""
     }
   }
 
   async deploy() {
 
-    const accAlice = acct
-    const ctcAlice = accAlice.deploy(backend);
+    const ctcAlice = acct.contract(backend);
 
     try {
-      await Promise.all([
-        backend.Alice(ctcAlice, {
-          ...undefined,
-          wager: reach.parseCurrency(5),
-          ...reach.hasConsoleLogger,
-        }),])
+      await backend.Alice(ctcAlice, contracts[contractName].interact)
     }
     catch (error) { console.log(error) }
+  }
+
+
+  select = (event) => {
+    if (event.target.value !== "Smart Contracts") {
+      backend = contracts[event.target.value].contract;
+      contractName = event.target.value;
+      this.setState({ description: contracts[event.target.value].description });
+    }
+    else {
+      this.setState({ description: "" })
+    }
   }
 
   render() {
     return (
       <div className="reach" align="center">
+        <select onChange={this.select}>
+          <option>Smart Contracts</option>
+          <option>Morra Game</option>
+        </select>
+        <p>{this.state.description}</p>
         <button onClick={() => reach.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;

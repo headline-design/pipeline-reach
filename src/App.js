@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
+import { _Participants } from './index.main.mjs';
 
 var contractName = "Morra Game"
 
@@ -34,7 +35,8 @@ const contracts = {
     description: 'Game of two players guessing "fingers"',
     interact: {...undefined,
       wager: reach.parseCurrency(0.001),
-      ...reach.hasConsoleLogger}
+      ...reach.hasConsoleLogger},
+      attach:{}
   }
 }
 
@@ -43,16 +45,27 @@ class App extends Component {
     super(props)
     this.state = {
       address: "",
-      description: ""
+      description: "",
+      participants: ""
     }
   }
 
   async deploy() {
 
-    const ctcAlice = acct.contract(backend);
+    let ctcAlice = acct.contract(backend);
 
     try {
       await backend.Alice(ctcAlice, contracts[contractName].interact)
+    }
+    catch (error) { console.log(error) }
+  }
+
+  async attach() {
+
+    let ctcAlice = acct.contract(backend);
+
+    try {
+      await backend.Bob(ctcAlice, contracts[contractName].interact)
     }
     catch (error) { console.log(error) }
   }
@@ -63,6 +76,7 @@ class App extends Component {
       backend = contracts[event.target.value].contract;
       contractName = event.target.value;
       this.setState({ description: contracts[event.target.value].description });
+      try{this.setState({participants: Object.keys(_Participants).toString()})}catch(error){console.log(error)}
     }
     else {
       this.setState({ description: "" })
@@ -77,6 +91,7 @@ class App extends Component {
           <option>Morra Game</option>
         </select>
         <p>{this.state.description}</p>
+        <p>Participants: {this.state.participants}</p>
         <button onClick={() => reach.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;
@@ -86,6 +101,7 @@ class App extends Component {
         }>Connect</button>
         <h3>{this.state.address}</h3>
         <button onClick={this.deploy}>Deploy</button>
+        <button onClick={this.attach} disabled>Attach</button>
       </div>
     )
   }

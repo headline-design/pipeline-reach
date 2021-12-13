@@ -18,8 +18,6 @@ async function compileProgram(client, teal) {
 
 const wallet = new MyAlgoConnect()
 
-var loading = true;
-
 var teal = ""
 var teal2 = ""
 
@@ -39,7 +37,7 @@ async function getContracts(filelist) {
     let data2 = await fetch(filelist[0] + " clear.txt")
     tealContracts[name].clearProgram = await data2.text()
   }
-  loading = false
+  document.getElementById("loader").style.display = "none"
 }
 
 getContracts(tealNames);
@@ -191,11 +189,14 @@ class App extends Component {
   render() {
     return (
       <div className="reach" align="center">
+        <div className="loader" id ="loader"></div>
         <h1>Smart Contract Command Center</h1>
         <h2>What the heck is a "smart contract"?</h2>
         <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of variable data and evaluates transactions to either approve or dissapprove them.</p>
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
+        <h2>Why use this tool?</h2>
+        <p>Currently, TEAL contract creation has no JavaScript support. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and expertise in command line tools. in In order to boost decentralizion and broad adoption, we are working towards the creation of a JSTeal language and complete browser-only solutions to creation, deployment and integration.</p>
         <button onClick={() => reach.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;

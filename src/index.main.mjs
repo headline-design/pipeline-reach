@@ -1692,7 +1692,7 @@ export async function Bob(ctcTop, interact) {
 
 
 };
-const _ALGO = {
+export const _ALGO = {
   appApproval: `#pragma version 5
 txn RekeyTo
 global ZeroAddress

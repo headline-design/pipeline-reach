@@ -5,6 +5,7 @@ import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import { _Participants } from './index.main.mjs';
 import algosdk from 'algosdk'
+import {CopyBlock, github} from 'react-code-blocks';
 
 var sender = ""
 
@@ -17,17 +18,31 @@ async function compileProgram(client, teal) {
 
 const wallet = new MyAlgoConnect()
 
+var loading = true;
+
 var teal = ""
 var teal2 = ""
 
-async function getContract(file){
-  let data = await fetch(file)
-  data = await data.text()
-  return data
+const tealContracts = {
+  "Permissionless Voting": {
+    description: 'allows anyone can vote on two candidates within a specified "round" range'
+  }
 }
 
-getContract('voting.txt').then(data => {teal = data; console.log(teal)})
-getContract('votingClear.txt').then(data => {teal2 = data; console.log(teal)})
+const tealNames = ["Permissionless Voting"]
+
+async function getContracts(filelist) {
+  for (let i = 0; i < filelist.length; i++) {
+    let name = filelist[i]
+    let data = await fetch(filelist[0] + ".txt")
+    tealContracts[name].program = await data.text()
+    let data2 = await fetch(filelist[0] + " clear.txt")
+    tealContracts[name].clearProgram = await data2.text()
+  }
+  loading = false
+}
+
+getContracts(tealNames);
 
 var contractName = "Morra Game"
 
@@ -65,7 +80,7 @@ const contracts = {
     },
     attach: {
       ..._Participants['Bob'],
-      acceptWager: (amt) => { console.log('Bob accepts: ' + amt)},
+      acceptWager: (amt) => { console.log('Bob accepts: ' + amt) },
       ...reach.hasConsoleLogger,
     }
   }
@@ -77,7 +92,8 @@ class App extends Component {
     this.state = {
       address: "",
       description: "",
-      participants: ""
+      participants: "",
+      teal: ""
     }
   }
 
@@ -92,7 +108,7 @@ class App extends Component {
   }
 
   async attach() {
-    
+
     let accAlice = acct
     accAlice.networkAccount.addr = "C5E5W3BERJALL2ZH4YB3TAP7ZSJH2PJUPDHLGF74YE6DBMQ62AA47IXGNQ"
     let ctcAlice = accAlice.contract(backend);
@@ -106,23 +122,39 @@ class App extends Component {
 
 
   select = (event) => {
-    if (event.target.value !== "Smart Contracts") {
+    if (event.target.value !== "Reach Contracts") {
       backend = contracts[event.target.value].contract;
       contractName = event.target.value;
       this.setState({ description: contracts[event.target.value].description });
-      this.setState({participants: Object.keys(_Participants).toString()})
+      this.setState({ participants: Object.keys(_Participants).toString() });
+      this.setState({teal: backend._ALGO.appApproval})
     }
     else {
       this.setState({ description: "" })
+      this.setState({teal: ""})
     }
   }
 
-  async deployTeal(){
+  selectTeal = (event) => {
+    if (event.target.value !== "TEAL Contracts") {
+      teal = tealContracts[event.target.value].program;
+      teal2 = tealContracts[event.target.value].clearProgram
+      contractName = event.target.value;
+      this.setState({ description: tealContracts[event.target.value].description });
+      this.setState({teal: tealContracts[event.target.value].program})
+    }
+    else {
+      this.setState({ description: "" })
+      this.setState({teal: ""})
+    }
+  }
+
+  async deployTeal() {
     console.log("sender: " + sender)
-    const algodClient = new algosdk.Algodv2("",'https://api.testnet.algoexplorer.io', '');
+    const algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
 
     let compiled = await compileProgram(algodClient, teal)
-    let compiledClear = await compileProgram(algodClient,teal2)
+    let compiledClear = await compileProgram(algodClient, teal2)
 
     console.log(compiled)
     const params = await algodClient.getTransactionParams().do();
@@ -134,24 +166,24 @@ class App extends Component {
     let voteStart = algosdk.encodeUint64(params.firstRound + 2000)
     let voteEnd = algosdk.encodeUint64(params.firstRound + 3000)
 
-    let appArgs = [registrationStart,registrationEnd,voteStart,voteEnd]
+    let appArgs = [registrationStart, registrationEnd, voteStart, voteEnd]
     console.log(appArgs)
-    
+
     const txn = algosdk.makeApplicationCreateTxnFromObject({
-        suggestedParams: {
-            ...params,
-        },
-        from: sender,
-        numLocalByteSlices: 1,
-        numGlobalByteSlices: 1,
-        numLocalInts: 0,
-        numGlobalInts: 6,
-        appArgs: appArgs,
-        approvalProgram: new Uint8Array(Buffer.from(compiled.result, "base64")),
-        clearProgram: new Uint8Array(Buffer.from(compiledClear.result, "base64")),
-        onComplete: 0,
+      suggestedParams: {
+        ...params,
+      },
+      from: sender,
+      numLocalByteSlices: 1,
+      numGlobalByteSlices: 1,
+      numLocalInts: 0,
+      numGlobalInts: 6,
+      appArgs: appArgs,
+      approvalProgram: new Uint8Array(Buffer.from(compiled.result, "base64")),
+      clearProgram: new Uint8Array(Buffer.from(compiledClear.result, "base64")),
+      onComplete: 0,
     });
-    
+
     const signedTxn = await wallet.signTransaction(txn.toByte());
     console.log(signedTxn)
   }
@@ -159,12 +191,11 @@ class App extends Component {
   render() {
     return (
       <div className="reach" align="center">
-        <select onChange={this.select}>
-          <option>Smart Contracts</option>
-          <option>Morra Game</option>
-        </select>
-        <p>{this.state.description}</p>
-        <p>Participants: {this.state.participants}</p>
+        <h1>Smart Contract Command Center</h1>
+        <h2>What the heck is a smart contract?</h2>
+        <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of variable data and evaluates transactions to either approve or dissapprove them.</p>
+        <h2>How can people interact with my smart contract?</h2>
+        <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
         <button onClick={() => reach.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;
@@ -174,9 +205,38 @@ class App extends Component {
         })
         }>Connect</button>
         <h3>{this.state.address}</h3>
-        <button onClick={this.deploy}>Deploy</button>
-        <button onClick={this.attach}>Attach</button><br></br>
+        <select onChange={this.select}>
+          <option>Reach Contracts</option>
+          <option>Morra Game</option>
+        </select>
+        <button onClick={this.deploy}>Deploy Reach Contract</button>
+        <p>{this.state.description}</p>
+
+        <button onClick={this.attach} style={{ display: "none" }}>Attach</button><br></br>
+        <select onChange={this.selectTeal}>
+          <option>TEAL Contracts</option>
+          <option>Permissionless Voting</option>
+        </select>
         <button onClick={this.deployTeal}>Deploy Teal Contract</button>
+        <div align="left">
+        <CopyBlock
+          text={this.state.teal}
+          language={"c++"}
+          showLineNumbers={true}
+          wrapLines
+          showLineNumbers
+          theme={github}
+          codeBlock
+          customStyle={{
+        height: 'auto',
+        overflow: 'auto',
+        align: "left",
+        background: "#fff",
+        backgroundColor: "#fff",
+        borderColor: "#D7DAE0",
+      }}
+    />
+    </div>
       </div>
     )
   }

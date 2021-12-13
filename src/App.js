@@ -196,7 +196,7 @@ class App extends Component {
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
         <h2>Why use this tool?</h2>
-        <p>Currently, TEAL contract creation has no JavaScript support. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and expertise in command line tools. in In order to boost decentralizion and broad adoption, we are working towards the creation of a JSTeal language and complete browser-only solutions to creation, deployment and integration.</p>
+        <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and expertise in command line tools. in In order to boost decentralization and broad adoption, we are working towards the creation of a JSTeal language and complete browser-only solutions to creation, deployment and integration.</p>
         <button onClick={() => reach.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;

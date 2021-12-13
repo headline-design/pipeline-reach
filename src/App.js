@@ -5,7 +5,7 @@ import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import { _Participants } from './index.main.mjs';
 import algosdk from 'algosdk'
-import {CopyBlock, github} from 'react-code-blocks';
+import {CopyBlock, dracula} from 'react-code-blocks';
 
 var sender = ""
 
@@ -25,7 +25,7 @@ var teal2 = ""
 
 const tealContracts = {
   "Permissionless Voting": {
-    description: 'allows anyone can vote on two candidates within a specified "round" range'
+    description: 'allows anyone to vote on two candidates within a specified "round" range'
   }
 }
 
@@ -221,11 +221,11 @@ class App extends Component {
         <div align="left">
         <CopyBlock
           text={this.state.teal}
-          language={"c++"}
+          language={"cpp"}
           showLineNumbers={true}
           wrapLines
           showLineNumbers
-          theme={github}
+          theme={dracula}
           codeBlock
           customStyle={{
         height: 'auto',

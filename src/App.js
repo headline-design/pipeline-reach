@@ -5,7 +5,7 @@ import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import { _Participants } from './index.main.mjs';
 import algosdk from 'algosdk'
-import {CopyBlock, dracula} from 'react-code-blocks';
+import { CopyBlock, dracula } from 'react-code-blocks';
 
 var sender = ""
 
@@ -127,11 +127,11 @@ class App extends Component {
       contractName = event.target.value;
       this.setState({ description: contracts[event.target.value].description });
       this.setState({ participants: Object.keys(_Participants).toString() });
-      this.setState({teal: backend._ALGO.appApproval})
+      this.setState({ teal: backend._ALGO.appApproval })
     }
     else {
       this.setState({ description: "" })
-      this.setState({teal: ""})
+      this.setState({ teal: "" })
     }
   }
 
@@ -141,11 +141,11 @@ class App extends Component {
       teal2 = tealContracts[event.target.value].clearProgram
       contractName = event.target.value;
       this.setState({ description: tealContracts[event.target.value].description });
-      this.setState({teal: tealContracts[event.target.value].program})
+      this.setState({ teal: tealContracts[event.target.value].program })
     }
     else {
       this.setState({ description: "" })
-      this.setState({teal: ""})
+      this.setState({ teal: "" })
     }
   }
 
@@ -192,7 +192,7 @@ class App extends Component {
     return (
       <div className="reach" align="center">
         <h1>Smart Contract Command Center</h1>
-        <h2>What the heck is a smart contract?</h2>
+        <h2>What the heck is a "smart contract"?</h2>
         <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of variable data and evaluates transactions to either approve or dissapprove them.</p>
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
@@ -204,7 +204,7 @@ class App extends Component {
           console.log(acct);
         })
         }>Connect</button>
-        <h3>{this.state.address}</h3>
+        <h5>{this.state.address}</h5>
         <select onChange={this.select}>
           <option>Reach Contracts</option>
           <option>Morra Game</option>
@@ -218,25 +218,26 @@ class App extends Component {
           <option>Permissionless Voting</option>
         </select>
         <button onClick={this.deployTeal}>Deploy Teal Contract</button>
+        <h2>TEAL Code:</h2>
         <div align="left">
-        <CopyBlock
-          text={this.state.teal}
-          language={"cpp"}
-          showLineNumbers={true}
-          wrapLines
-          showLineNumbers
-          theme={dracula}
-          codeBlock
-          customStyle={{
-        height: 'auto',
-        overflow: 'auto',
-        align: "left",
-        background: "#fff",
-        backgroundColor: "#fff",
-        borderColor: "#D7DAE0",
-      }}
-    />
-    </div>
+          <CopyBlock
+            text={this.state.teal}
+            language={"cpp"}
+            showLineNumbers={true}
+            wrapLines
+            showLineNumbers
+            theme={dracula}
+            codeBlock
+            customStyle={{
+              height: 'auto',
+              overflow: 'auto',
+              align: "left",
+              background: "#fff",
+              backgroundColor: "#fff",
+              borderColor: "#D7DAE0",
+            }}
+          />
+        </div>
       </div>
     )
   }

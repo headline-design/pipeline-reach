@@ -40,31 +40,19 @@ async function getContracts(filelist) {
   document.getElementById("loader").style.display = "none"
 }
 
+var acct = {}
+
 getContracts(tealNames);
 
 var contractName = "Morra Game"
 
 var backend = undefined
 
-var devnet = false;
+var net = "TestNet";
 
-const reach = loadStdlib(devnet ? 'ALGO-devnet' : 'ALGO')
+const reach = loadStdlib('ALGO')
 
 //change Algo server IP to match your local reach devnet IP, or leave with "http://localhost" to test on local machine only.
-
-const myEnv = reach.providerEnvByName(devnet ? 'LocalHost' : 'MainNet');
-console.log(myEnv);
-var acct = {};
-
-if (devnet) {
-  myEnv.ALGO_INDEXER_SERVER = "http://localhost";
-  myEnv.ALGO_SERVER = "http://localhost";
-  reach.setProviderByEnv(myEnv);
-}
-
-reach.setWalletFallback(reach.walletFallback({
-  providerEnv: 'MainNet', MyAlgoConnect
-}));
 
 
 const contracts = {
@@ -133,6 +121,26 @@ class App extends Component {
     }
   }
 
+  toggleNet = (event) => {
+    if (event.target.value !== "Select Net:") {
+      if (event.target.value === "MainNet") {
+        net = "MainNet"
+        //reach.setProviderByName(net);
+        reach.setWalletFallback(reach.walletFallback({
+          providerEnv: net, MyAlgoConnect
+        }));
+      }
+      else {
+        net = "TestNet"
+        //reach.setProviderByName(net);
+        reach.setWalletFallback(reach.walletFallback({
+          providerEnv: net, MyAlgoConnect
+        }));
+      }
+    }
+    document.getElementById("net").disabled = true
+  }
+
   selectTeal = (event) => {
     if (event.target.value !== "TEAL Contracts") {
       teal = tealContracts[event.target.value].program;
@@ -149,7 +157,14 @@ class App extends Component {
 
   async deployTeal() {
     console.log("sender: " + sender)
-    const algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+    let algodClient = undefined
+
+    if (net === "TestNet") {
+      algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+    }
+    else {
+      algodClient = new algosdk.Algodv2("", 'https://algoexplorerapi.io', '');
+    }
 
     let compiled = await compileProgram(algodClient, teal)
     let compiledClear = await compileProgram(algodClient, teal2)
@@ -197,6 +212,11 @@ class App extends Component {
         <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
         <h2>Why use this tool?</h2>
         <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and expertise in command line tools. in In order to boost decentralization and broad adoption, we are working towards the creation of a JSTeal language and complete browser-only solutions to creation, deployment and integration.</p>
+        <select onChange={this.toggleNet} id="net">
+          <option>Select Net:</option>
+          <option>TestNet</option>
+          <option>MainNet</option>
+        </select><br></br><br></br>
         <button onClick={() => reach.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;

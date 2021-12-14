@@ -64,11 +64,18 @@ const contracts = {
       wager: reach.parseCurrency(0.001),
       ...reach.hasConsoleLogger
     },
-    attach: {
-      ..._Participants['Bob'],
-      acceptWager: (amt) => { console.log('Bob accepts: ' + amt) },
-      ...reach.hasConsoleLogger,
-    }
+    backendFunction: "Alice"
+  },
+  "NFT Auction": {
+    contract: require('./nftauction.mjs'),
+    description: "An NFT auction",
+    interact: {
+      getId: () => {
+        const id = reach.randomUInt();
+        console.log(` Alice makes id #${id}`);
+        return id; }
+    },
+    backendFunction: "Creator"
   }
 }
 
@@ -85,10 +92,11 @@ class App extends Component {
 
   async deploy() {
 
-    let ctcAlice = acct.contract(backend);
+    let ctcCreator = acct.contract(backend);
 
     try {
-      await backend.Alice(ctcAlice, contracts[contractName].interact)
+      let response = await backend[contracts[contractName].backendFunction](ctcCreator, contracts[contractName].interact)
+      console.log(response)
     }
     catch (error) { console.log(error) }
   }
@@ -182,7 +190,7 @@ class App extends Component {
     let appArgs = [registrationStart, registrationEnd, voteStart, voteEnd]
     console.log(appArgs)
 
-    const txn = algosdk.makeApplicationCreateTxnFromObject({
+    let txn = algosdk.makeApplicationCreateTxnFromObject({
       suggestedParams: {
         ...params,
       },
@@ -197,8 +205,10 @@ class App extends Component {
       onComplete: 0,
     });
 
-    const signedTxn = await wallet.signTransaction(txn.toByte());
+    let signedTxn = await wallet.signTransaction(txn.toByte());
     console.log(signedTxn)
+    let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
+    console.log(response)
   }
 
   render() {
@@ -211,7 +221,7 @@ class App extends Component {
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
         <h2>Why use this tool?</h2>
-        <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and expertise in command line tools. in In order to boost decentralization and broad adoption, we are working towards the creation of a JSTeal language and complete browser-only solutions to creation, deployment and integration.</p>
+        <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards the creation of a JSTeal language and complete browser-only solutions to creation, deployment and integration.</p>
         <select onChange={this.toggleNet} id="net">
           <option>Select Net:</option>
           <option>TestNet</option>
@@ -229,6 +239,7 @@ class App extends Component {
         <select onChange={this.select}>
           <option>Reach Contracts</option>
           <option>Morra Game</option>
+          <option>NFT Auction</option>
         </select>
         <button onClick={this.deploy}>Deploy Reach Contract</button>
         <p>{this.state.description}</p>
@@ -246,7 +257,6 @@ class App extends Component {
             language={"cpp"}
             showLineNumbers={true}
             wrapLines
-            showLineNumbers
             theme={dracula}
             codeBlock
             customStyle={{

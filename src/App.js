@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import './App.css';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
-import { _Participants } from './index.main.mjs';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 
@@ -65,9 +64,9 @@ const tealNames = ["Permissionless Voting"]
 async function getContracts(filelist) {
   for (let i = 0; i < filelist.length; i++) {
     let name = filelist[i]
-    let data = await fetch(filelist[0] + ".txt")
+    let data = await fetch("teal/" + filelist[0] + ".txt")
     tealContracts[name].program = await data.text()
-    let data2 = await fetch(filelist[0] + " clear.txt")
+    let data2 = await fetch("teal/" + filelist[0] + " clear.txt")
     tealContracts[name].clearProgram = await data2.text()
   }
   document.getElementById("loader").style.display = "none"
@@ -91,20 +90,21 @@ window.stdlib = stdlib
 
 const contracts = {
   "Morra Game": {
-    contract: require('./index.main.mjs'),
-    description: 'Game of two players guessing "fingers"',
-    interact: {
-      ..._Participants['Alice'],
-      wager: stdlib.parseCurrency(0.001),
-      ...stdlib.hasConsoleLogger
-    },
-    backendFunction: "Alice"
+    contract: require('./reach-backends/morra.mjs'),
+    description: 'Game of two players guessing "fingers"'
   },
   "NFT Auction": {
-    contract: require('./nftauction.mjs'),
+    contract: require('./reach-backends/nftauction.mjs'),
     description: "An NFT auction",
     frontend: async function () {
-      let data = await fetch("nftauctionFront.mjs"); return data.text();
+      let data = await fetch("reach-frontend/nftauctionFront.mjs"); return data.text();
+    }
+  },
+  "Popularity Contest": {
+    contract: require('./reach-backends/popularitycontest.mjs'),
+    description: "A vote for two candidates",
+    frontend: async function () {
+      let data = await fetch("reach-frontend/popularitycontestFront.mjs"); return data.text();
     }
   }
 }
@@ -161,7 +161,6 @@ class App extends Component {
       window.backend = backend;
       contractName = event.target.value;
       this.setState({ description: contracts[event.target.value].description });
-      this.setState({ participants: Object.keys(_Participants).toString() });
       this.setState({ teal: backend._ALGO.appApproval })
       contracts[event.target.value].frontend().then(response => this.setState({ frontend: response }))
     }
@@ -199,10 +198,12 @@ class App extends Component {
       contractName = event.target.value;
       this.setState({ description: tealContracts[event.target.value].description });
       this.setState({ teal: tealContracts[event.target.value].program })
+      this.setState({ frontend: "" })
     }
     else {
       this.setState({ description: "" })
       this.setState({ teal: "" })
+      this.setState({ frontend: "" })
     }
   }
 
@@ -288,8 +289,9 @@ class App extends Component {
           <option>Reach Contracts</option>
           <option disabled>Morra Game</option>
           <option>NFT Auction</option>
+          <option>Popularity Contest</option>
         </select>
-        <button onClick={this.deploy}>Deploy Reach Contract</button>
+        <button onClick={this.deploy}>Deploy & Run Reach</button>
         <p>{this.state.description}</p>
 
         <button onClick={this.attach} style={{ display: "none" }}>Attach</button><br></br>

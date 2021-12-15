@@ -1,3 +1,6 @@
+
+
+
 (async () => {
   const timeoutK = window.stdlib.connector === 'ALGO' ? 1 : 3;
   const startingBalance = window.stdlib.parseCurrency(100);
@@ -5,12 +8,14 @@
   const getBalance = async (who) => fmt(await window.stdlib.balanceOf(who));
 
   const accAlice  = window.acct
+  const accBob    = window.acct
   const accClaire = window.acct
 
   const ctcAlice = accAlice.deploy(window.backend);
 
   const everyone = [
     [' Alice', accAlice],
+    ['   Bob', accBob],
     ['Claire', accClaire],
   ];
   const randomArrayRef = (arr) =>
@@ -19,6 +24,10 @@
   const auctionProps = {
     ' Alice': {
       startingBid: window.stdlib.parseCurrency(0),
+      timeout: timeoutK * 3,
+    },
+    '   Bob': {
+      startingBid: window.stdlib.parseCurrency(1),
       timeout: timeoutK * 3,
     },
     'Claire': {
@@ -31,18 +40,20 @@
     ' Alice': {
       maxBid: window.stdlib.parseCurrency(7),
     },
+    '   Bob': {
+      maxBid: window.stdlib.parseCurrency(40),
+    },
     'Claire': {
       maxBid: window.stdlib.parseCurrency(20),
     }
   };
 
   const trades = {
-    ' Alice': 0, 'Claire': 0
+    ' Alice': 0, '   Bob': 0, 'Claire': 0
   };
 
   const makeOwner = (acc, who) => {
-    const ctc = acc.attach(window.backend, window.creator?ctcAlice.getInfo():window.appId);
-    ctcAlice.getInfo().then(data => console.log(data))
+    const ctc = acc.attach(window.backend, ctcAlice.getInfo());
     const others = everyone.filter(x => x[0] !== who);
     return window.backend.Owner(ctc, {
       showOwner: ((id, owner) => {
@@ -72,23 +83,17 @@
     });
   };
 
-if (window.creator){
   await Promise.all([
     window.backend.Creator(
       ctcAlice,
-      {
-        getId: () => {
-          const id = window.stdlib.randomUInt();
-          console.log(` Alice makes id #${id}`);
-          return id;
-        }
-      }),
-    makeOwner(accAlice, ' Alice'),
-    makeOwner(accClaire, 'Claire')
-])
-}
-else{
-  await Promise.all([makeOwner(accClaire, 'Claire')])
-}
-
+      { getId: () => {
+        const id = window.stdlib.randomUInt();
+        console.log(` Alice makes id #${id}`);
+        return id; }
+      },
+    ),
+    makeOwner(accAlice , ' Alice'),
+    makeOwner(accBob   , '   Bob'),
+    makeOwner(accClaire, 'Claire'),
+  ]);
 })();

@@ -8,6 +8,13 @@ A project to enable deploying and testing Reach and TEAL smart contracts fully i
 - rename .mjs file from build and paste into `src/reach-backends`
 - export _ALGO from backend
 - copy frontend code to `public/reach-frontend` and rename
+- change `filename` variable in `reachconvert.mjs` to above name:
+
+```jsx 
+import * as fs from "fs"
+
+var filename = "morraFront"
+```
 - run
 
 ```bash

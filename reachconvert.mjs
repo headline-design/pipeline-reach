@@ -1,6 +1,6 @@
 import * as fs from "fs"
 
-var filename = "popularitycontestFront"
+var filename = "atomicswapFront"
 
 let path = 'public/reach-frontend/' + filename + '.mjs'
 
@@ -17,7 +17,11 @@ fs.readFile(path, function (err, data) {
 
 const toReplaceOnce = [
    `import { loadStdlib } from '@reach-sh/stdlib';`,
-   `import * as backend from './build/index.main.mjs';`
+   `import * as backend from './build/index.main.mjs';`,
+    `const stdlib = await loadStdlib();`,
+    `const stdlib = await loadStdlib('ALGO');`,
+    `import { loadStdlib } from '@reach-sh/stdlib/loader.mjs';`,
+    `import launchToken from '@reach-sh/stdlib/launchToken.mjs';`
 ]
 
 const toReplaceAll = {

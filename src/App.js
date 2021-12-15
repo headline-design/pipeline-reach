@@ -5,6 +5,9 @@ import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
+import launchToken from '@reach-sh/stdlib/launchToken.mjs';
+
+window.launchToken  = launchToken
 
 var appId = 0
 
@@ -89,9 +92,19 @@ window.stdlib = stdlib
 
 
 const contracts = {
+  "Atomic Swap":{
+    contract: require('./reach-backends/atomicswap.mjs'),
+    description: 'unkown function',
+    frontend: async function () {
+      let data = await fetch("reach-frontend/atomicswapFront.mjs"); return data.text();
+    }
+  },
   "Morra Game": {
     contract: require('./reach-backends/morra.mjs'),
-    description: 'Game of two players guessing "fingers"'
+    description: 'Game of two players guessing "fingers"',
+    frontend: async function () {
+      let data = await fetch("reach-frontend/morraFront.mjs"); return data.text();
+    }
   },
   "NFT Auction": {
     contract: require('./reach-backends/nftauction.mjs'),
@@ -127,13 +140,8 @@ class App extends Component {
 
     let ctcCreator = acct.contract(backend);
 
-    console.log(ctcCreator)
-
     window.acct = acct
-
-    console.log(acct.networkAccount)
-
-
+    
     try {
       eval(this.state.frontend)
     }
@@ -161,7 +169,8 @@ class App extends Component {
       window.backend = backend;
       contractName = event.target.value;
       this.setState({ description: contracts[event.target.value].description });
-      this.setState({ teal: backend._ALGO.appApproval })
+      this.setState({ teal: backend._ALGO.appApproval });
+      this.setState({ participants: Object.keys(backend._Participants).toString() })
       contracts[event.target.value].frontend().then(response => this.setState({ frontend: response }))
     }
     else {
@@ -199,11 +208,13 @@ class App extends Component {
       this.setState({ description: tealContracts[event.target.value].description });
       this.setState({ teal: tealContracts[event.target.value].program })
       this.setState({ frontend: "" })
+      this.setState({ participants: "" })
     }
     else {
       this.setState({ description: "" })
       this.setState({ teal: "" })
       this.setState({ frontend: "" })
+      this.setState({ participants: "" })
     }
   }
 
@@ -270,11 +281,13 @@ class App extends Component {
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
         <h2>Why use this tool?</h2>
-        <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards the creation of a JSTeal language and complete browser-only solutions to creation, deployment and integration.</p>
+        <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards complete browser-only backend-free  solutions to creation, deployment and integration.</p>
+        <h2>Instructions</h2>
+        <p>After connecting to your wallet, select a contract and deploy! The Reach button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions. For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds.</p>
         <select onChange={this.toggleNet} id="net">
           <option>Select Net:</option>
           <option>TestNet</option>
-          <option disabled>MainNet</option>
+          <option>MainNet</option>
         </select><br></br><br></br>
         <button onClick={() => stdlib.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
@@ -287,20 +300,21 @@ class App extends Component {
         <h5>{this.state.address}</h5>
         <select onChange={this.select}>
           <option>Reach Contracts</option>
-          <option disabled>Morra Game</option>
+          <option>Atomic Swap</option>
+          <option >Morra Game</option>
           <option>NFT Auction</option>
           <option>Popularity Contest</option>
         </select>
         <button onClick={this.deploy}>Deploy & Run Reach</button>
-        <p>{this.state.description}</p>
-
+        <p><b>Description: </b>{this.state.description}</p>
+        <p><b>Participants: </b>{this.state.participants}</p>
         <button onClick={this.attach} style={{ display: "none" }}>Attach</button><br></br>
         <select onChange={this.selectTeal}>
           <option>TEAL Contracts</option>
           <option>Permissionless Voting</option>
         </select>
         <button onClick={this.deployTeal}>Deploy Teal Contract</button>
-        <input type="number" onChange={this.inputAppId}></input><button onClick={() => { deleteApp(appId) }}>Delete App</button>
+        <br></br><br></br><input type="number" onChange={this.inputAppId} placeholder="app id"></input><button onClick={() => { deleteApp(appId) }}>Delete App</button>
         <table>
           <thead><th>TEAL Code</th><th>Frontend Code</th></thead>
           <tbody>

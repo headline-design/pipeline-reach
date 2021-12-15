@@ -275,9 +275,9 @@ class App extends Component {
     return (
       <div className="app" align="center">
         <div className="loader" id="loader"></div>
-        <h1>Smart Contract Command Center</h1>
+        <h1>Smart Contract Command Lab</h1>
         <h2>What the heck is a "smart contract"?</h2>
-        <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of variable data and evaluates transactions to either approve or dissapprove them.</p>
+        <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of global and local data and evaluates transactions to either approve or dissapprove them.</p>
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
         <h2>Why use this tool?</h2>

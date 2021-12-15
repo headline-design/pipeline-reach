@@ -7,6 +7,39 @@ import { _Participants } from './index.main.mjs';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 
+var appId = 0
+
+window.appId = 51807989
+
+async function deleteApp() {
+  let algodClient = ""
+
+  if (net === "TestNet") {
+    algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+  }
+  else {
+    algodClient = new algosdk.Algodv2("", 'https://algoexplorerapi.io', '');
+  }
+  let params = await algodClient.getTransactionParams().do();
+
+  let txn = algosdk.makeApplicationDeleteTxnFromObject({
+    suggestedParams: {
+      ...params,
+    },
+    from: sender,
+    appIndex: parseInt(appId),
+  });
+
+  let signedTxn = await wallet.signTransaction(txn.toByte());
+  try{
+  let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
+  console.log(response)
+  }
+  catch(error){console.log(error)}
+}
+
+window.creator = false;
+
 var sender = ""
 
 async function compileProgram(client, teal) {
@@ -50,9 +83,10 @@ var backend = undefined
 
 var net = "TestNet";
 
-const reach = loadStdlib('ALGO')
+const stdlib = loadStdlib('ALGO')
+window.stdlib = stdlib
 
-//change Algo server IP to match your local reach devnet IP, or leave with "http://localhost" to test on local machine only.
+//change Algo server IP to match your local stdlib devnet IP, or leave with "http://localhost" to test on local machine only.
 
 
 const contracts = {
@@ -61,23 +95,21 @@ const contracts = {
     description: 'Game of two players guessing "fingers"',
     interact: {
       ..._Participants['Alice'],
-      wager: reach.parseCurrency(0.001),
-      ...reach.hasConsoleLogger
+      wager: stdlib.parseCurrency(0.001),
+      ...stdlib.hasConsoleLogger
     },
     backendFunction: "Alice"
   },
   "NFT Auction": {
     contract: require('./nftauction.mjs'),
     description: "An NFT auction",
-    interact: {
-      getId: () => {
-        const id = reach.randomUInt();
-        console.log(` Alice makes id #${id}`);
-        return id; }
-    },
-    backendFunction: "Creator"
+    frontend: async function () {
+      let data = await fetch("nftauctionFront.mjs"); return data.text();
+    }
   }
 }
+
+
 
 class App extends Component {
   constructor(props) {
@@ -86,19 +118,27 @@ class App extends Component {
       address: "",
       description: "",
       participants: "",
-      teal: ""
+      teal: "",
+      frontend: ""
     }
   }
 
-  async deploy() {
+  deploy = () => {
 
     let ctcCreator = acct.contract(backend);
 
+    console.log(ctcCreator)
+
+    window.acct = acct
+
+    console.log(acct.networkAccount)
+
+
     try {
-      let response = await backend[contracts[contractName].backendFunction](ctcCreator, contracts[contractName].interact)
-      console.log(response)
+      eval(this.state.frontend)
     }
     catch (error) { console.log(error) }
+    
   }
 
   async attach() {
@@ -118,14 +158,17 @@ class App extends Component {
   select = (event) => {
     if (event.target.value !== "Reach Contracts") {
       backend = contracts[event.target.value].contract;
+      window.backend = backend;
       contractName = event.target.value;
       this.setState({ description: contracts[event.target.value].description });
       this.setState({ participants: Object.keys(_Participants).toString() });
       this.setState({ teal: backend._ALGO.appApproval })
+      contracts[event.target.value].frontend().then(response => this.setState({ frontend: response }))
     }
     else {
       this.setState({ description: "" })
       this.setState({ teal: "" })
+      this.setState({ frontend: "" })
     }
   }
 
@@ -133,15 +176,15 @@ class App extends Component {
     if (event.target.value !== "Select Net:") {
       if (event.target.value === "MainNet") {
         net = "MainNet"
-        //reach.setProviderByName(net);
-        reach.setWalletFallback(reach.walletFallback({
+        //stdlib.setProviderByName(net);
+        stdlib.setWalletFallback(stdlib.walletFallback({
           providerEnv: net, MyAlgoConnect
         }));
       }
       else {
         net = "TestNet"
-        //reach.setProviderByName(net);
-        reach.setWalletFallback(reach.walletFallback({
+        //stdlib.setProviderByName(net);
+        stdlib.setWalletFallback(stdlib.walletFallback({
           providerEnv: net, MyAlgoConnect
         }));
       }
@@ -165,7 +208,7 @@ class App extends Component {
 
   async deployTeal() {
     console.log("sender: " + sender)
-    let algodClient = undefined
+    let algodClient = ""
 
     if (net === "TestNet") {
       algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
@@ -211,10 +254,15 @@ class App extends Component {
     console.log(response)
   }
 
+  inputAppId(event) {
+    appId = event.target.value
+    console.log(appId)
+  }
+
   render() {
     return (
-      <div className="reach" align="center">
-        <div className="loader" id ="loader"></div>
+      <div className="app" align="center">
+        <div className="loader" id="loader"></div>
         <h1>Smart Contract Command Center</h1>
         <h2>What the heck is a "smart contract"?</h2>
         <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of variable data and evaluates transactions to either approve or dissapprove them.</p>
@@ -225,9 +273,9 @@ class App extends Component {
         <select onChange={this.toggleNet} id="net">
           <option>Select Net:</option>
           <option>TestNet</option>
-          <option>MainNet</option>
+          <option disabled>MainNet</option>
         </select><br></br><br></br>
-        <button onClick={() => reach.getDefaultAccount().then(data2 => {
+        <button onClick={() => stdlib.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;
           this.setState({ address: address })
@@ -238,7 +286,7 @@ class App extends Component {
         <h5>{this.state.address}</h5>
         <select onChange={this.select}>
           <option>Reach Contracts</option>
-          <option>Morra Game</option>
+          <option disabled>Morra Game</option>
           <option>NFT Auction</option>
         </select>
         <button onClick={this.deploy}>Deploy Reach Contract</button>
@@ -250,25 +298,54 @@ class App extends Component {
           <option>Permissionless Voting</option>
         </select>
         <button onClick={this.deployTeal}>Deploy Teal Contract</button>
-        <h2>TEAL Code:</h2>
-        <div align="left">
-          <CopyBlock
-            text={this.state.teal}
-            language={"cpp"}
-            showLineNumbers={true}
-            wrapLines
-            theme={dracula}
-            codeBlock
-            customStyle={{
-              height: 'auto',
-              overflow: 'auto',
-              align: "left",
-              background: "#fff",
-              backgroundColor: "#fff",
-              borderColor: "#D7DAE0",
-            }}
-          />
-        </div>
+        <input type="number" onChange={this.inputAppId}></input><button onClick={() => { deleteApp(appId) }}>Delete App</button>
+        <table>
+          <thead><th>TEAL Code</th><th>Frontend Code</th></thead>
+          <tbody>
+            <tr>
+              <td valign="top">
+                <div align="left">
+                  <CopyBlock
+                    text={this.state.teal}
+                    language={"cpp"}
+                    showLineNumbers={true}
+                    wrapLines
+                    theme={dracula}
+                    codeBlock
+                    customStyle={{
+                      height: 'auto',
+                      overflow: 'false',
+                      align: "left",
+                      background: "#fff",
+                      backgroundColor: "#fff",
+                      borderColor: "#D7DAE0",
+                    }}
+                  />
+                </div>
+              </td>
+              <td valign="top">
+                <div align="left">
+                  <CopyBlock
+                    text={this.state.frontend}
+                    language={"js"}
+                    showLineNumbers={true}
+                    wrapLines
+                    theme={dracula}
+                    codeBlock
+                    customStyle={{
+                      height: 'auto',
+                      overflow: 'auto',
+                      align: "left",
+                      background: "#fff",
+                      backgroundColor: "#fff",
+                      borderColor: "#D7DAE0",
+                    }}
+                  />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     )
   }

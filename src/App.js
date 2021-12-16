@@ -6,7 +6,9 @@ import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
-import {Button, Select,PipelineShell, Input, Link} from 'pipeline-ui'
+import {Button, Select,PipelineShell, Input, Link,Flash} from 'pipeline-ui'
+
+const FINGERS = [0, 1, 2, 3, 4, 5];
 
 window.launchToken  = launchToken
 
@@ -137,12 +139,19 @@ class App extends Component {
     }
   }
 
-  deploy = () => {
-
-    let ctcCreator = acct.contract(backend);
-
-    window.acct = acct
+  deploy = async () => {
     
+    window.acct = acct
+    //code for pipeline 
+    /*
+    async function reachDeploy(address,role,interact){
+    let ctcCreator = address.contract(backend);
+    await backend[role](ctcCreator, {interact})
+    let id = await ctcCreator.getInfo()
+    console.log(id)
+    return id
+      }
+    */
     try {
       eval(this.state.frontend)
     }
@@ -295,6 +304,9 @@ componentDidMount(){
         <p>After connecting to your wallet, select a contract and deploy! The Reach Button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions. For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds. To fund your testnet account, simply visit: <Link href="https://testnet.algoexplorer.io/dispenser" target="_blank" title="Algo Dispenser">
           the AlgoExplorer Dispenser
         </Link></p>
+        <Flash my={3} variant="danger">
+          WARNING!!! Reach code must run to completion, at which point a prompt will appear to allow the deletion of the smart contract. Due to the nature of the Reach code, a significant amount of time may pass while it appears nothing is happening. Please be patient and sign all transactions!
+        </Flash>
         <table><thead><th></th><th>Log</th></thead>
           <tr><td valign="top">
         <PipelineShell>

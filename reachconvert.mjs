@@ -2,6 +2,12 @@ import * as fs from "fs"
 
 var filename = "atomicswapFront"
 
+const addition = ` window.reachLog = "Starting reach..."
+
+function log(input){
+  window.reachLog += ("\n" + input)
+}`
+
 let path = 'public/reach-frontend/' + filename + '.mjs'
 
 var textfile = ""
@@ -28,7 +34,8 @@ const toReplaceAll = {
    stdlib: "window.stdlib",
    backend: "window.backend",
    "await window.stdlib.newTestAccount(startingBalance);": "window.acct",
-   "window.stdlib.newTestAccount(startingBalance)": "window.acct"
+   "window.stdlib.newTestAccount(startingBalance)": "window.acct",
+   "console.log": "log"
 }
 
 
@@ -37,6 +44,7 @@ function convertFile() {
    Object.keys(toReplaceAll).forEach(key => {
       textfile = textfile.split(key).join(toReplaceAll[key]);
    })
+   textfile += addition
    console.log(textfile)
    fs.writeFile(path, textfile, function (err) {
       if (err) {

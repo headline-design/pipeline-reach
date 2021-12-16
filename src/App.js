@@ -288,7 +288,7 @@ componentDidMount(){
         <h2>What the heck is a "smart contract"?</h2>
         <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of global and local data and evaluates transactions to either approve or dissapprove them.</p>
         <h2>How can people interact with my smart contract?</h2>
-        <p>After "opting in" to the smart contract, they can send a group transaction to the Algorand network that includes an "App Call" along with any relevant "arguments." The number of transactions in each group and their formats will vary between contracts.</p>
+        <p>After "opting in" to the smart contract, they can send an "app call" transaction to the Algorand network along with any relevant "arguments" or other transaction. The number of transactions in each group and their formats will vary between contracts. When using Reach, the exported "participants" are functions that are called to initiate each transaction. The user function takes the arguments of userAddress.attach(window.backend, ctcCreator.getInfo()); and an "interact" object. The need for a "backend" can easily be eliminated by obtaining and sharing the value of ctcCreator.getInfo() (app id) by other means.</p>
         <h2>Why use this tool?</h2>
         <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards complete browser-only backend-free  solutions to creation, deployment and integration.</p>
         <h2>Instructions</h2>
@@ -314,8 +314,7 @@ componentDidMount(){
             { value: 'Reach Contracts', label: 'Reach Contracts' },
             { value: 'Morra Game', label: 'Morra Game' },
             { value: 'NFT Auction', label: 'NFT Auction' },
-            { value: 'Popularity Contest', label: 'Popularity Contest' },
-            { value: 'Atomic Swap', label: 'Atomic Swap' }
+            { value: 'Popularity Contest', label: 'Popularity Contest' }
           ]}></Select>
         <Button onClick={this.deploy}>Deploy & Run Reach</Button>
         <div align="left">

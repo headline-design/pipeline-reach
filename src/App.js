@@ -6,7 +6,7 @@ import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
-import {Button, Select,PipelineShell, Input} from 'pipeline-ui'
+import {Button, Select,PipelineShell, Input, Link} from 'pipeline-ui'
 
 window.launchToken  = launchToken
 
@@ -292,7 +292,9 @@ componentDidMount(){
         <h2>Why use this tool?</h2>
         <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards complete browser-only backend-free  solutions to creation, deployment and integration.</p>
         <h2>Instructions</h2>
-        <p>After connecting to your wallet, select a contract and deploy! The Reach Button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions. For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds.</p>
+        <p>After connecting to your wallet, select a contract and deploy! The Reach Button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions. For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds. To fund your testnet account, simply visit: <Link href="https://testnet.algoexplorer.io/dispenser" target="_blank" title="Algo Dispenser">
+          the AlgoExplorer Dispenser
+        </Link></p>
         <table><thead><th></th><th>Log</th></thead>
           <tr><td valign="top">
         <PipelineShell>

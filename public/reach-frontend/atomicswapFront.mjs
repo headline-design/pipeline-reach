@@ -1,3 +1,9 @@
+window.reachLog = "Starting reach..."
+
+function log(input){
+  window.reachLog += ("\n" + input)
+}
+
 const shouldFail = async (fp) => {
   let worked = undefined;
   try {
@@ -6,7 +12,7 @@ const shouldFail = async (fp) => {
   } catch (e) {
     worked = false;
   }
-  console.log(`\tshouldFail = ${worked}`);
+  log(`\tshouldFail = ${worked}`);
   if (worked !== false) {
     throw Error(`shouldFail`);
   }
@@ -29,9 +35,9 @@ const shouldFail = async (fp) => {
     accAlice.setGasLimit(myGasLimit);
     accBob.setGasLimit(myGasLimit);
   } else if ( window.stdlib.connector == 'ALGO' ) {
-    console.log(`Demonstrating need to opt-in on ALGO`);
+    log(`Demonstrating need to opt-in on ALGO`);
     await shouldFail(async () => await zorkmid.mint(accAlice, startingBalance));
-    console.log(`Opt-ing in on ALGO`);
+    log(`Opt-ing in on ALGO`);
     await accAlice.tokenAccept(zorkmid.id);
     await accAlice.tokenAccept(gil.id);
     await accBob.tokenAccept(zorkmid.id);
@@ -42,20 +48,20 @@ const shouldFail = async (fp) => {
   await gil.mint(accBob, startingBalance.mul(2));
 
   if ( window.stdlib.connector == 'ALGO' ) {
-    console.log(`Demonstrating opt-out on ALGO`);
-    console.log(`\tAlice opts out`);
+    log(`Demonstrating opt-out on ALGO`);
+    log(`\tAlice opts out`);
     await zorkmid.optOut(accAlice);
-    console.log(`\tAlice can't receive mint`);
+    log(`\tAlice can't receive mint`);
     await shouldFail(async () => await zorkmid.mint(accAlice, startingBalance));
-    console.log(`\tAlice re-opts-in`);
+    log(`\tAlice re-opts-in`);
     await accAlice.tokenAccept(zorkmid.id);
-    console.log(`\tAlice can receive mint`);
+    log(`\tAlice can receive mint`);
     await zorkmid.mint(accAlice, startingBalance);
   }
 
   const fmt = (x) => window.stdlib.formatCurrency(x, 4);
   const doSwap = async (tokenA, amtA, tokenB, amtB, trusted) => {
-    console.log(`\nPerforming swap of ${fmt(amtA)} ${tokenA.sym} for ${fmt(amtB)} ${tokenB.sym}`);
+    log(`\nPerforming swap of ${fmt(amtA)} ${tokenA.sym} for ${fmt(amtB)} ${tokenB.sym}`);
 
     const getBalance = async (tokenX, who) => {
       const amt = await window.stdlib.balanceOf(who, tokenX.id);
@@ -65,41 +71,41 @@ const shouldFail = async (fp) => {
 
     const beforeAlice = await getBalances(accAlice);
     const beforeBob = await getBalances(accBob);
-    console.log(`Alice has ${beforeAlice}`);
-    console.log(`Bob has ${beforeBob}`);
+    log(`Alice has ${beforeAlice}`);
+    log(`Bob has ${beforeBob}`);
 
     if ( trusted ) {
-      console.log(`Alice transfers to Bob honestly`);
+      log(`Alice transfers to Bob honestly`);
       await window.stdlib.transfer(accAlice, accBob, amtA, tokenA.id);
-      console.log(`Bob transfers to Alice honestly`);
+      log(`Bob transfers to Alice honestly`);
       await window.stdlib.transfer(accBob, accAlice, amtB, tokenB.id);
     } else {
-      console.log(`Alice will deploy the Reach DApp.`);
+      log(`Alice will deploy the Reach DApp.`);
       const ctcAlice = accAlice.deploy(window.backend);
-      console.log(`Bob attaches to the Reach DApp.`);
+      log(`Bob attaches to the Reach DApp.`);
       const ctcBob = accBob.attach(window.backend, ctcAlice.getInfo());
 
       let succ = undefined;
       const Common = (who) => ({
         seeTimeout: () => {
           succ = false;
-          console.log(`${who} saw a timeout`); },
+          log(`${who} saw a timeout`); },
         seeTransfer: () => {
           succ = true;
-          console.log(`${who} saw the transfer happened`); },
+          log(`${who} saw the transfer happened`); },
       });
 
       await Promise.all([
         window.backend.Alice(ctcAlice, {
           ...Common(`Alice`),
           getSwap: () => {
-            console.log(`Alice proposes swap`);
+            log(`Alice proposes swap`);
             return [ tokenA.id, amtA, tokenB.id, amtB, time ]; },
         }),
         window.backend.Bob(ctcBob, {
           ...Common(`Bob`),
           accSwap: (...v) => {
-            console.log(`Bob accepts swap of`, v);
+            log(`Bob accepts swap of`, v);
             return true; },
         }),
       ]);
@@ -109,8 +115,8 @@ const shouldFail = async (fp) => {
 
     const afterAlice = await getBalances(accAlice);
     const afterBob = await getBalances(accBob);
-    console.log(`Alice went from ${beforeAlice} to ${afterAlice}`);
-    console.log(`Bob went from ${beforeBob} to ${afterBob}`);
+    log(`Alice went from ${beforeAlice} to ${afterAlice}`);
+    log(`Bob went from ${beforeBob} to ${afterBob}`);
   };
 
   const amtA = window.stdlib.parseCurrency(1);

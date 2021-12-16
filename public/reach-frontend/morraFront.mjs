@@ -1,7 +1,11 @@
-
-
-
 (async () => {
+
+  window.reachLog = "Starting reach..."
+
+  function log(input){
+    window.reachLog += ("\n" + input)
+  }
+
   const startingBalance = window.stdlib.parseCurrency(10);
 
   const accAlice = window.acct
@@ -24,11 +28,11 @@
     getFingers: async () => {
      // const fingers = Math.floor(Math.random() * 3);
       const fingers = Math.floor(Math.random() * 6);         
-      console.log(`${Who} shoots ${FINGERS[fingers]} fingers`);
+      log(`${Who} shoots ${FINGERS[fingers]} fingers`);
      // build in occasional timeout
       if ( Math.random() <= 0.01 ) {
         for ( let i = 0; i < 10; i++ ) {
-          console.log(`  ${Who} takes their sweet time sending it back...`);
+          log(`  ${Who} takes their sweet time sending it back...`);
           await window.stdlib.wait(1);
         }
       }     
@@ -41,23 +45,23 @@
      // occassional timeout
       if ( Math.random() <= 0.01 ) {
         for ( let i = 0; i < 10; i++ ) {
-          console.log(`  ${Who} takes their sweet time sending it back...`);
+          log(`  ${Who} takes their sweet time sending it back...`);
           await window.stdlib.wait(1);
         }
       }
-      console.log(`${Who} guessed total of ${guess}`);   
+      log(`${Who} guessed total of ${guess}`);   
       return guess;
     },
     seeWinning: (winningNumber) => {    
-      console.log(`Actual total fingers thrown: ${winningNumber}`);
-      console.log(`----------------------------`);  
+      log(`Actual total fingers thrown: ${winningNumber}`);
+      log(`----------------------------`);  
     },
 
     seeOutcome: (outcome) => {
-      console.log(`${Who} saw outcome ${OUTCOME[outcome]}`);
+      log(`${Who} saw outcome ${OUTCOME[outcome]}`);
     },
     informTimeout: () => {
-      console.log(`${Who} observed a timeout`);
+      log(`${Who} observed a timeout`);
     },
   });
 
@@ -70,7 +74,7 @@
     window.backend.Bob(ctcBob, {
       ...Player('Bob'),
       acceptWager: (amt) => {      
-        console.log(`Bob accepts the wager of ${fmt(amt)}.`);
+        log(`Bob accepts the wager of ${fmt(amt)}.`);
       },
       ...window.stdlib.hasConsoleLogger,      
     }),
@@ -78,8 +82,8 @@
   const afterAlice = await getBalance(accAlice);
   const afterBob = await getBalance(accBob);
 
-  console.log(`Alice went from ${beforeAlice} to ${afterAlice}.`);
-  console.log(`Bob went from ${beforeBob} to ${afterBob}.`);
+  log(`Alice went from ${beforeAlice} to ${afterAlice}.`);
+  log(`Bob went from ${beforeBob} to ${afterBob}.`);
 
 
 })();

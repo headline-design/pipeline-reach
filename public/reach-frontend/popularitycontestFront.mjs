@@ -1,7 +1,10 @@
-
-
-
 (async () => {
+  window.reachLog = "Starting reach..."
+
+  function log(input){
+    window.reachLog += ("\n" + input)
+  }
+  
   const [ N, timeoutFactor ] =
     window.stdlib.connector === 'ALGO' ? [ 2, 2 ] : [ 5, 2 ];
 
@@ -23,9 +26,9 @@
   const Common = (Who) => ({
       showOutcome: (outcome, forA, forB) => {
         if ( outcome == 2 ) {
-          console.log(`${Who} saw the timeout`); }
+          log(`${Who} saw the timeout`); }
         else {
-          console.log(`${Who} saw a ${forA}-${forB} outcome: ${OUTCOME[outcome]}`);
+          log(`${Who} saw a ${forA}-${forB} outcome: ${OUTCOME[outcome]}`);
         }
   } });
 
@@ -50,7 +53,7 @@
         getVote: (() => vote),
         voterWas: ((voterAddr) => {
           if ( window.stdlib.addressEq(voterAddr, accVoter) ) {
-            console.log(`${Who} voted: ${vote ? 'Alice' : 'Bob'}`);
+            log(`${Who} voted: ${vote ? 'Alice' : 'Bob'}`);
             voted = true;
           } } ),
         shouldVote: (() => ! voted) }); } )
@@ -59,7 +62,7 @@
   const afterAlice = await getBalance(accAlice);
   const afterBob = await getBalance(accBob);
 
-  console.log(`Alice went from ${beforeAlice} to ${afterAlice}.`);
-  console.log(`Bob went from ${beforeBob} to ${afterBob}.`);
+  log(`Alice went from ${beforeAlice} to ${afterAlice}.`);
+  log(`Bob went from ${beforeBob} to ${afterBob}.`);
 
 })();

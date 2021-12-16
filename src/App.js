@@ -6,8 +6,11 @@ import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
+import {Button, Select,PipelineShell, Input} from 'pipeline-ui'
 
 window.launchToken  = launchToken
+
+window.reachLog = "Hello World!"
 
 var appId = 0
 
@@ -76,8 +79,6 @@ async function getContracts(filelist) {
 }
 
 var acct = {}
-
-getContracts(tealNames);
 
 var contractName = "Morra Game"
 
@@ -164,14 +165,14 @@ class App extends Component {
 
 
   select = (event) => {
-    if (event.target.value !== "Reach Contracts") {
-      backend = contracts[event.target.value].contract;
+    if (event.value !== "Reach Contracts") {
+      backend = contracts[event.value].contract;
       window.backend = backend;
-      contractName = event.target.value;
-      this.setState({ description: contracts[event.target.value].description });
+      contractName = event.value;
+      this.setState({ description: contracts[event.value].description });
       this.setState({ teal: backend._ALGO.appApproval });
       this.setState({ participants: Object.keys(backend._Participants).toString() })
-      contracts[event.target.value].frontend().then(response => this.setState({ frontend: response }))
+      contracts[event.value].frontend().then(response => this.setState({ frontend: response }))
     }
     else {
       this.setState({ description: "" })
@@ -181,32 +182,30 @@ class App extends Component {
   }
 
   toggleNet = (event) => {
-    if (event.target.value !== "Select Net:") {
-      if (event.target.value === "MainNet") {
+    if (event.value !== "Select Net:") {
+      if (event.value === "MainNet") {
         net = "MainNet"
-        //stdlib.setProviderByName(net);
         stdlib.setWalletFallback(stdlib.walletFallback({
           providerEnv: net, MyAlgoConnect
         }));
       }
       else {
         net = "TestNet"
-        //stdlib.setProviderByName(net);
         stdlib.setWalletFallback(stdlib.walletFallback({
           providerEnv: net, MyAlgoConnect
         }));
       }
     }
-    document.getElementById("net").disabled = true
+    document.getElementById("react-select-3-input").disabled = true
   }
 
   selectTeal = (event) => {
-    if (event.target.value !== "TEAL Contracts") {
-      teal = tealContracts[event.target.value].program;
-      teal2 = tealContracts[event.target.value].clearProgram
-      contractName = event.target.value;
-      this.setState({ description: tealContracts[event.target.value].description });
-      this.setState({ teal: tealContracts[event.target.value].program })
+    if (event.value !== "TEAL Contracts") {
+      teal = tealContracts[event.value].program;
+      teal2 = tealContracts[event.value].clearProgram
+      contractName = event.value;
+      this.setState({ description: tealContracts[event.value].description });
+      this.setState({ teal: tealContracts[event.value].program })
       this.setState({ frontend: "" })
       this.setState({ participants: "" })
     }
@@ -271,6 +270,16 @@ class App extends Component {
     console.log(appId)
   }
 
+componentDidMount(){
+  getContracts(tealNames);
+  setInterval(function(){
+    let textarea = document.getElementById('log');
+      textarea.value = window.reachLog
+      textarea.scrollTop = textarea.scrollHeight;
+  }, 200)
+}
+
+
   render() {
     return (
       <div className="app" align="center">
@@ -283,38 +292,52 @@ class App extends Component {
         <h2>Why use this tool?</h2>
         <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards complete browser-only backend-free  solutions to creation, deployment and integration.</p>
         <h2>Instructions</h2>
-        <p>After connecting to your wallet, select a contract and deploy! The Reach button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions. For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds.</p>
-        <select onChange={this.toggleNet} id="net">
-          <option>Select Net:</option>
-          <option>TestNet</option>
-          <option>MainNet</option>
-        </select><br></br><br></br>
-        <button onClick={() => stdlib.getDefaultAccount().then(data2 => {
+        <p>After connecting to your wallet, select a contract and deploy! The Reach Button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions. For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds.</p>
+        <table><thead><th></th><th>Log</th></thead>
+          <tr><td valign="top">
+        <PipelineShell>
+        <Select id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
+            { value: 'TestNet', label: 'TestNet' },
+            { value: 'MainNet', label: 'MainNet' }
+          ]}></Select>
+        <br></br><br></br>
+        <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
           let address = data2.networkAccount.addr;
           acct = data2;
           this.setState({ address: address })
           sender = address
           console.log(acct);
         })
-        }>Connect</button>
+        }>Connect</Button>
         <h5>{this.state.address}</h5>
-        <select onChange={this.select}>
-          <option>Reach Contracts</option>
-          <option>Atomic Swap</option>
-          <option >Morra Game</option>
-          <option>NFT Auction</option>
-          <option>Popularity Contest</option>
-        </select>
-        <button onClick={this.deploy}>Deploy & Run Reach</button>
+          <Select placeholder="Select Reach contract..." onChange={this.select} options={[
+            { value: 'Reach Contracts', label: 'Reach Contracts' },
+            { value: 'Morra Game', label: 'Morra Game' },
+            { value: 'NFT Auction', label: 'NFT Auction' },
+            { value: 'Popularity Contest', label: 'Popularity Contest' },
+            { value: 'Atomic Swap', label: 'Atomic Swap' }
+          ]}></Select>
+        <Button onClick={this.deploy}>Deploy & Run Reach</Button>
+        <div align="left">
         <p><b>Description: </b>{this.state.description}</p>
         <p><b>Participants: </b>{this.state.participants}</p>
-        <button onClick={this.attach} style={{ display: "none" }}>Attach</button><br></br>
-        <select onChange={this.selectTeal}>
-          <option>TEAL Contracts</option>
-          <option>Permissionless Voting</option>
-        </select>
-        <button onClick={this.deployTeal}>Deploy Teal Contract</button>
-        <br></br><br></br><input type="number" onChange={this.inputAppId} placeholder="app id"></input><button onClick={() => { deleteApp(appId) }}>Delete App</button>
+        </div>
+        <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
+        <Select placeholder="Select TEAL contract..." onChange={this.selectTeal} options={[
+            { value: 'TEAL Contracts', label: 'TEAL Contracts' },
+            { value: 'Permissionless Voting', label: 'Permissionless Voting' }
+          ]}></Select>
+        <Button onClick={this.deployTeal}>Deploy Teal Contract</Button>
+        <br></br><br></br><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete App</Button>
+            </PipelineShell>
+          </td>
+          <td valign="top">
+            <textarea style={{"background-color":"black", "color":"yellow"}} id="log" readonly rows="30" cols="50">
+              Testing
+              hello
+            </textarea>
+          </td></tr>
+        </table>
         <table>
           <thead><th>TEAL Code</th><th>Frontend Code</th></thead>
           <tbody>

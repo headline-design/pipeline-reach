@@ -1,7 +1,10 @@
-
-
-
 (async () => {
+  window.reachLog = "Starting reach..."
+
+  function log(input){
+    window.reachLog += ("\n" + input)
+  }
+  
   const timeoutK = window.stdlib.connector === 'ALGO' ? 1 : 3;
   const startingBalance = window.stdlib.parseCurrency(100);
   const fmt = (x) => window.stdlib.formatCurrency(x, 4);
@@ -58,9 +61,9 @@
     return window.backend.Owner(ctc, {
       showOwner: ((id, owner) => {
         if ( window.stdlib.addressEq(owner, acc) ) {
-          console.log(`\n${who} owns it\n`);
+          log(`\n${who} owns it\n`);
           if ( trades[who] == 2 ) {
-            console.log(`${who} stops`);
+            log(`${who} stops`);
             process.exit(0);
           } else {
             trades[who] += 1;
@@ -68,13 +71,13 @@
         }
       }),
       getAuctionProps: (() => {
-        console.log(`${who} starts the bidding at ${fmt(auctionProps[who].startingBid)}`);
+        log(`${who} starts the bidding at ${fmt(auctionProps[who].startingBid)}`);
         return auctionProps[who];
       }),
       getBid: (price) => {
         if (price < bids[who].maxBid) {
           const bid = window.stdlib.add(price, window.stdlib.parseCurrency(1));
-          console.log(`${who} tries to bid ${fmt(bid)} (based on price: ${fmt(price)})`);
+          log(`${who} tries to bid ${fmt(bid)} (based on price: ${fmt(price)})`);
           return ['Some', bid];
         } else {
           return ['None', null];
@@ -88,7 +91,7 @@
       ctcAlice,
       { getId: () => {
         const id = window.stdlib.randomUInt();
-        console.log(` Alice makes id #${id}`);
+        log(` Alice makes id #${id}`);
         return id; }
       },
     ),

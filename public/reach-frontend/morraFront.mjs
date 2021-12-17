@@ -5,8 +5,8 @@
   function log(input){
     window.reachLog += ("\n" + input)
   }
-
-  const startingBalance = window.stdlib.parseCurrency(10);
+  
+  const startingBalance = window.stdlib.parseCurrency(3);
 
   const accAlice = window.acct
   const accBob = window.acct

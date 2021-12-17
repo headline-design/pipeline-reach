@@ -10,7 +10,7 @@ import { Button, Select, PipelineShell, Input, Link, Flash, Textarea } from 'pip
 
 window.launchToken = launchToken
 
-window.reachLog = "Hello World!"
+window.reachLog = "hello world!"
 
 var custom = false
 
@@ -111,6 +111,13 @@ const contracts = {
       let data = await fetch("reach-frontend/atomicswapFront.mjs"); return data.text();
     }
   },
+  "Dan Storage": {
+    contract: require('./reach-backends/danstorage.mjs'),
+    description: 'Writes then reads data from smart contract 5 times',
+    frontend: async function () {
+      let data = await fetch("reach-frontend/danstorageFront.mjs"); return data.text();
+    }
+  },
   "Morra Game": {
     contract: require('./reach-backends/morra.mjs'),
     description: 'Game of two players guessing "fingers"',
@@ -148,7 +155,7 @@ class App extends Component {
     }
   }
 
-  deploy = async () => {
+  deploy = () => {
 
     window.acct = acct
     //code for pipeline 
@@ -379,8 +386,9 @@ int 1
               <Select placeholder="Select Reach contract..." onChange={this.select} options={[
                 { value: 'Reach Contracts', label: 'Reach Contracts' },
                 { value: 'Morra Game', label: 'Morra Game' },
-                { value: 'NFT Auction', label: 'NFT Auction' },
-                { value: 'Popularity Contest', label: 'Popularity Contest' }
+                { value: 'Popularity Contest', label: 'Popularity Contest' },
+                { value: 'Dan Storage', label: 'Dan Storage' },
+                { value: 'NFT Auction', label: 'NFT Auction' }
               ]}></Select>
               <Button onClick={this.deploy}>Deploy & Run Reach</Button>
               <div align="left">

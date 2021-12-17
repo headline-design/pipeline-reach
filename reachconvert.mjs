@@ -1,6 +1,8 @@
-import * as fs from "fs"
+//unstable, needs work
 
-var filename = "atomicswapFront"
+/* import * as fs from "fs"
+
+var filename = "danstorageFront"
 
 const addition = ` window.reachLog = "Starting reach..."
 
@@ -53,3 +55,5 @@ function convertFile() {
       console.log("File converted.");
    });
 }
+
+*/

@@ -15,7 +15,7 @@ import * as fs from "fs"
 
 var filename = "morraFront"
 ```
-- run
+- run (currently deprecated, work in progress)
 
 ```bash
 node reachconvert.mjs

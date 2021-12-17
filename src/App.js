@@ -50,8 +50,11 @@ var sender = ""
 async function compileProgram(client, teal) {
   let encoder = new TextEncoder();
   let programBytes = encoder.encode(teal);
-  let compileResponse = await client.compile(programBytes).do();
-  return compileResponse;
+  try {
+    let compileResponse = await client.compile(programBytes).do();
+    return compileResponse;
+  }
+  catch (error) { alert("invalid TEAL contract") }
 }
 
 const wallet = new MyAlgoConnect()
@@ -60,6 +63,7 @@ var teal = ""
 var teal2 = ""
 
 const tealContracts = {
+  "custom": {},
   "Permissionless Voting": {
     description: 'allows anyone to vote on two candidates within a specified "round" range'
   }
@@ -203,7 +207,6 @@ class App extends Component {
         }));
       }
     }
-    document.getElementById("react-select-3-input").disabled = true
   }
 
   selectTeal = (event) => {
@@ -236,7 +239,9 @@ class App extends Component {
         algodClient = new algosdk.Algodv2("", 'https://algoexplorerapi.io', '');
       }
 
-      let compiled = await compileProgram(algodClient, teal)
+      let compiled = ""
+
+      compiled = await compileProgram(algodClient, teal)
       let compiledClear = await compileProgram(algodClient, teal2)
 
       console.log(compiled)
@@ -291,6 +296,17 @@ class App extends Component {
     }, 200)
   }
 
+  loadTeal = async () => {
+    let contents = await document.getElementById('file-input').files[0].text();
+    console.log(contents)
+    tealContracts.custom.program = contents
+    let clearProgram = `#pragma version 4
+int 1
+`;
+tealContracts.custom.clearProgram = clearProgram
+    this.selectTeal({value:"custom"})
+  }
+
 
   render() {
     return (
@@ -314,8 +330,7 @@ class App extends Component {
           <tr><td valign="top">
             <PipelineShell>
               <Select id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
-                { value: 'TestNet', label: 'TestNet' },
-                { value: 'MainNet', label: 'MainNet' }
+                { value: 'TestNet', label: 'TestNet' }
               ]}></Select>
               <br></br><br></br>
               <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
@@ -343,6 +358,8 @@ class App extends Component {
                 { value: 'TEAL Contracts', label: 'TEAL Contracts' },
                 { value: 'Permissionless Voting', label: 'Permissionless Voting' }
               ]}></Select>
+              <Button onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
+              <input id="file-input" type="file" onChange={this.loadTeal} style={{display: " none"}} />
               <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
               <br></br><br></br><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button>
             </PipelineShell>

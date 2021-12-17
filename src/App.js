@@ -69,18 +69,21 @@ const tealContracts = {
     description: "Custom TEAL"
   },
   "Permissionless Voting": {
-    description: 'allows anyone to vote on two candidates within a specified "round" range'
+    description: 'allows anyone who holds a unique ASA to vote on two candidates within a specified "round" range'
+  },
+  "Permissioned Voting": {
+    description: 'allows people to vote on two candidates within a specified "round" range'
   }
 }
 
-const tealNames = ["Permissionless Voting"]
+const tealNames = ["Permissionless Voting", "Permissioned Voting"]
 
 async function getContracts(filelist) {
   for (let i = 0; i < filelist.length; i++) {
     let name = filelist[i]
-    let data = await fetch("teal/" + filelist[0] + ".txt")
+    let data = await fetch("teal/" + filelist[i] + ".txt")
     tealContracts[name].program = await data.text()
-    let data2 = await fetch("teal/" + filelist[0] + " clear.txt")
+    let data2 = await fetch("teal/" + filelist[i] + " clear.txt")
     tealContracts[name].clearProgram = await data2.text()
   }
   document.getElementById("loader").style.display = "none"
@@ -180,6 +183,7 @@ class App extends Component {
 
 
   select = (event) => {
+    document.getElementById("appArgs").style.display = "none"
     if (event.value !== "Reach Contracts") {
       backend = contracts[event.value].contract;
       window.backend = backend;
@@ -214,6 +218,7 @@ class App extends Component {
   }
 
   selectTeal = (event) => {
+    console.log(event.value)
     if (event.value !== "TEAL Contracts") {
       if (event.value === "custom") { custom = true } else { custom = false }
       teal = tealContracts[event.value].program;
@@ -346,7 +351,7 @@ int 1
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send an "app call" transaction to the Algorand network along with any relevant "arguments" or other transaction. The number of transactions in each group and their formats will vary between contracts. When using Reach, the exported "participants" are functions that are called to initiate each transaction. The user function takes the arguments of userAddress.attach(window.backend, ctcCreator.getInfo()); and an "interact" object. The need for a "backend" can be easily and completely eliminated by obtaining and sharing the value of ctcCreator.getInfo() app id by other means.</p>
         <h2>Why use this tool?</h2>
-        <p>Currently, TEAL contract creation has minimal support for JavaScript, the <i>lingua franca</i> of the online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards complete browser-only backend-free  solutions to creation, deployment and integration.</p>
+        <p>Currently, TEAL contract creation has minimal support for client-only JavaScript, the <i>lingua franca</i> of the decentralized online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards complete browser-only backend-free  solutions to creation, deployment and integration.</p>
         <h2>Instructions</h2>
         <p>After connecting to your wallet, select a contract and deploy! The Reach Button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions. For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds. To fund your testnet account, simply visit: <Link href="https://testnet.algoexplorer.io/dispenser" target="_blank" title="Algo Dispenser">
           the AlgoExplorer Dispenser
@@ -370,6 +375,7 @@ int 1
               })
               }>Connect</Button>
               <h5>{this.state.address}</h5>
+              <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
               <Select placeholder="Select Reach contract..." onChange={this.select} options={[
                 { value: 'Reach Contracts', label: 'Reach Contracts' },
                 { value: 'Morra Game', label: 'Morra Game' },
@@ -382,9 +388,11 @@ int 1
                 <p><b>Participants: </b>{this.state.participants}</p>
               </div>
               <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
+              <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
               <Select placeholder="Select TEAL contract..." onChange={this.selectTeal} options={[
                 { value: 'TEAL Contracts', label: 'TEAL Contracts' },
-                { value: 'Permissionless Voting', label: 'Permissionless Voting' }
+                { value: 'Permissionless Voting', label: 'Permissionless Voting' },
+                { value: 'Permissioned Voting', label: 'Permissioned Voting' }
               ]}></Select>
               <Button onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
               <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
@@ -396,6 +404,7 @@ int 1
                 <p>App Args</p>
                 <textarea id="argInput">{"[\n]"}</textarea>
               </div>
+              <p></p>
               <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
               <br></br><br></br><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button>
             </PipelineShell>

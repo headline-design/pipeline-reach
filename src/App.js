@@ -6,11 +6,13 @@ import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
-import { Button, Select, PipelineShell, Input, Link, Flash } from 'pipeline-ui'
+import { Button, Select, PipelineShell, Input, Link, Flash, Textarea } from 'pipeline-ui'
 
 window.launchToken = launchToken
 
 window.reachLog = "Hello World!"
+
+var custom = false
 
 var appId = 0
 
@@ -63,7 +65,9 @@ var teal = ""
 var teal2 = ""
 
 const tealContracts = {
-  "custom": {},
+  "custom": {
+    description: "Custom TEAL"
+  },
   "Permissionless Voting": {
     description: 'allows anyone to vote on two candidates within a specified "round" range'
   }
@@ -211,6 +215,7 @@ class App extends Component {
 
   selectTeal = (event) => {
     if (event.value !== "TEAL Contracts") {
+      if (event.value === "custom") { custom = true } else { custom = false }
       teal = tealContracts[event.value].program;
       teal2 = tealContracts[event.value].clearProgram
       contractName = event.value;
@@ -254,18 +259,38 @@ class App extends Component {
       let voteStart = algosdk.encodeUint64(params.firstRound + 2000)
       let voteEnd = algosdk.encodeUint64(params.firstRound + 3000)
 
-      let appArgs = [registrationStart, registrationEnd, voteStart, voteEnd]
+      let appArgs = custom ? document.getElementById("argInput").value : [registrationStart, registrationEnd, voteStart, voteEnd]
+
+      if (custom) {
+        let js = eval(appArgs)
+        let converted = []
+        js.forEach(arg => { converted.push(algosdk.encodeUint64(arg)) })
+        appArgs = converted
+      }
+
       console.log(appArgs)
+
+      let lbytes = 1
+      let gbytes = 1
+      let lints = 0
+      let gints = 6
+
+      if (custom) {
+        lbytes = document.getElementById("lbyte").value
+        gbytes = document.getElementById("gbyte").value
+        lints = document.getElementById("lint").value
+        gints = document.getElementById("gint").value
+      }
 
       let txn = algosdk.makeApplicationCreateTxnFromObject({
         suggestedParams: {
           ...params,
         },
         from: sender,
-        numLocalByteSlices: 1,
-        numGlobalByteSlices: 1,
-        numLocalInts: 0,
-        numGlobalInts: 6,
+        numLocalByteSlices: lbytes,
+        numGlobalByteSlices: gbytes,
+        numLocalInts: lints,
+        numGlobalInts: gints,
         appArgs: appArgs,
         approvalProgram: new Uint8Array(Buffer.from(compiled.result, "base64")),
         clearProgram: new Uint8Array(Buffer.from(compiledClear.result, "base64")),
@@ -275,6 +300,7 @@ class App extends Component {
       let signedTxn = await wallet.signTransaction(txn.toByte());
       console.log(signedTxn)
       let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
+      window.reachLog += ("\n" + "TXN ID: " + response.txId)
       console.log(response)
     }
     else {
@@ -298,13 +324,15 @@ class App extends Component {
 
   loadTeal = async () => {
     let contents = await document.getElementById('file-input').files[0].text();
-    console.log(contents)
     tealContracts.custom.program = contents
     let clearProgram = `#pragma version 4
 int 1
 `;
-tealContracts.custom.clearProgram = clearProgram
-    this.selectTeal({value:"custom"})
+    tealContracts.custom.clearProgram = clearProgram
+    this.selectTeal({ value: "custom" })
+
+    document.getElementById("appArgs").style.display = "block"
+    custom = true
   }
 
 
@@ -359,7 +387,15 @@ tealContracts.custom.clearProgram = clearProgram
                 { value: 'Permissionless Voting', label: 'Permissionless Voting' }
               ]}></Select>
               <Button onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
-              <input id="file-input" type="file" onChange={this.loadTeal} style={{display: " none"}} />
+              <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
+              <div id="appArgs" style={{ display: "none" }}>
+                <label>Local Byte Slices</label><input id="lbyte"></input><br></br>
+                <label>Global Byte Slices</label><input id="gbyte"></input><br></br>
+                <label>Local Integers</label><input id="lint"></input><br></br>
+                <label>Global Integers</label><input id="gint"></input><br></br>
+                <p>App Args</p>
+                <textarea id="argInput">{"[\n]"}</textarea>
+              </div>
               <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
               <br></br><br></br><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button>
             </PipelineShell>

@@ -6,11 +6,9 @@ import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
-import {Button, Select,PipelineShell, Input, Link,Flash} from 'pipeline-ui'
+import { Button, Select, PipelineShell, Input, Link, Flash } from 'pipeline-ui'
 
-const FINGERS = [0, 1, 2, 3, 4, 5];
-
-window.launchToken  = launchToken
+window.launchToken = launchToken
 
 window.reachLog = "Hello World!"
 
@@ -38,11 +36,11 @@ async function deleteApp() {
   });
 
   let signedTxn = await wallet.signTransaction(txn.toByte());
-  try{
-  let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
-  console.log(response)
+  try {
+    let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
+    console.log(response)
   }
-  catch(error){console.log(error)}
+  catch (error) { console.log(error) }
 }
 
 window.creator = false;
@@ -95,7 +93,7 @@ window.stdlib = stdlib
 
 
 const contracts = {
-  "Atomic Swap":{
+  "Atomic Swap": {
     contract: require('./reach-backends/atomicswap.mjs'),
     description: 'unkown function',
     frontend: async function () {
@@ -140,7 +138,7 @@ class App extends Component {
   }
 
   deploy = async () => {
-    
+
     window.acct = acct
     //code for pipeline 
     /*
@@ -156,7 +154,7 @@ class App extends Component {
       eval(this.state.frontend)
     }
     catch (error) { console.log(error) }
-    
+
   }
 
   async attach() {
@@ -227,51 +225,56 @@ class App extends Component {
   }
 
   async deployTeal() {
-    console.log("sender: " + sender)
-    let algodClient = ""
+    if (teal !== "") {
+      console.log("sender: " + sender)
+      let algodClient = ""
 
-    if (net === "TestNet") {
-      algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+      if (net === "TestNet") {
+        algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+      }
+      else {
+        algodClient = new algosdk.Algodv2("", 'https://algoexplorerapi.io', '');
+      }
+
+      let compiled = await compileProgram(algodClient, teal)
+      let compiledClear = await compileProgram(algodClient, teal2)
+
+      console.log(compiled)
+      const params = await algodClient.getTransactionParams().do();
+
+      console.log(params)
+
+      let registrationStart = algosdk.encodeUint64(params.firstRound)
+      let registrationEnd = algosdk.encodeUint64(params.firstRound + 1000)
+      let voteStart = algosdk.encodeUint64(params.firstRound + 2000)
+      let voteEnd = algosdk.encodeUint64(params.firstRound + 3000)
+
+      let appArgs = [registrationStart, registrationEnd, voteStart, voteEnd]
+      console.log(appArgs)
+
+      let txn = algosdk.makeApplicationCreateTxnFromObject({
+        suggestedParams: {
+          ...params,
+        },
+        from: sender,
+        numLocalByteSlices: 1,
+        numGlobalByteSlices: 1,
+        numLocalInts: 0,
+        numGlobalInts: 6,
+        appArgs: appArgs,
+        approvalProgram: new Uint8Array(Buffer.from(compiled.result, "base64")),
+        clearProgram: new Uint8Array(Buffer.from(compiledClear.result, "base64")),
+        onComplete: 0,
+      });
+
+      let signedTxn = await wallet.signTransaction(txn.toByte());
+      console.log(signedTxn)
+      let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
+      console.log(response)
     }
     else {
-      algodClient = new algosdk.Algodv2("", 'https://algoexplorerapi.io', '');
+      alert("Please select a TEAL contract to deploy!")
     }
-
-    let compiled = await compileProgram(algodClient, teal)
-    let compiledClear = await compileProgram(algodClient, teal2)
-
-    console.log(compiled)
-    const params = await algodClient.getTransactionParams().do();
-
-    console.log(params)
-
-    let registrationStart = algosdk.encodeUint64(params.firstRound)
-    let registrationEnd = algosdk.encodeUint64(params.firstRound + 1000)
-    let voteStart = algosdk.encodeUint64(params.firstRound + 2000)
-    let voteEnd = algosdk.encodeUint64(params.firstRound + 3000)
-
-    let appArgs = [registrationStart, registrationEnd, voteStart, voteEnd]
-    console.log(appArgs)
-
-    let txn = algosdk.makeApplicationCreateTxnFromObject({
-      suggestedParams: {
-        ...params,
-      },
-      from: sender,
-      numLocalByteSlices: 1,
-      numGlobalByteSlices: 1,
-      numLocalInts: 0,
-      numGlobalInts: 6,
-      appArgs: appArgs,
-      approvalProgram: new Uint8Array(Buffer.from(compiled.result, "base64")),
-      clearProgram: new Uint8Array(Buffer.from(compiledClear.result, "base64")),
-      onComplete: 0,
-    });
-
-    let signedTxn = await wallet.signTransaction(txn.toByte());
-    console.log(signedTxn)
-    let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
-    console.log(response)
   }
 
   inputAppId(event) {
@@ -279,14 +282,14 @@ class App extends Component {
     console.log(appId)
   }
 
-componentDidMount(){
-  getContracts(tealNames);
-  setInterval(function(){
-    let textarea = document.getElementById('log');
+  componentDidMount() {
+    getContracts(tealNames);
+    setInterval(function () {
+      let textarea = document.getElementById('log');
       textarea.value = window.reachLog
       textarea.scrollTop = textarea.scrollHeight;
-  }, 200)
-}
+    }, 200)
+  }
 
 
   render() {
@@ -295,7 +298,7 @@ componentDidMount(){
         <div className="loader" id="loader"></div>
         <h1>Smart Contract Command Lab</h1>
         <h2>What the heck is a "smart contract"?</h2>
-        <p>A smart contract is a relatively simplistic program or "app" that exists on the blockchain network. It stores a small amount of global and local data and evaluates transactions to either approve or dissapprove them.</p>
+        <p>A smart contract is a relatively simplistic TEAL (Transaction Execution Approval Language) program or "app" that exists on the blockchain network. It stores a small amount of global and local data and evaluates transactions to either approve or dissapprove them.</p>
         <h2>How can people interact with my smart contract?</h2>
         <p>After "opting in" to the smart contract, they can send an "app call" transaction to the Algorand network along with any relevant "arguments" or other transaction. The number of transactions in each group and their formats will vary between contracts. When using Reach, the exported "participants" are functions that are called to initiate each transaction. The user function takes the arguments of userAddress.attach(window.backend, ctcCreator.getInfo()); and an "interact" object. The need for a "backend" can be easily and completely eliminated by obtaining and sharing the value of ctcCreator.getInfo() app id by other means.</p>
         <h2>Why use this tool?</h2>
@@ -309,47 +312,47 @@ componentDidMount(){
         </Flash>
         <table><thead><th></th><th>Log</th></thead>
           <tr><td valign="top">
-        <PipelineShell>
-        <Select id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
-            { value: 'TestNet', label: 'TestNet' },
-            { value: 'MainNet', label: 'MainNet' }
-          ]}></Select>
-        <br></br><br></br>
-        <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
-          let address = data2.networkAccount.addr;
-          acct = data2;
-          this.setState({ address: address })
-          sender = address
-          console.log(acct);
-        })
-        }>Connect</Button>
-        <h5>{this.state.address}</h5>
-          <Select placeholder="Select Reach contract..." onChange={this.select} options={[
-            { value: 'Reach Contracts', label: 'Reach Contracts' },
-            { value: 'Morra Game', label: 'Morra Game' },
-            { value: 'NFT Auction', label: 'NFT Auction' },
-            { value: 'Popularity Contest', label: 'Popularity Contest' }
-          ]}></Select>
-        <Button onClick={this.deploy}>Deploy & Run Reach</Button>
-        <div align="left">
-        <p><b>Description: </b>{this.state.description}</p>
-        <p><b>Participants: </b>{this.state.participants}</p>
-        </div>
-        <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
-        <Select placeholder="Select TEAL contract..." onChange={this.selectTeal} options={[
-            { value: 'TEAL Contracts', label: 'TEAL Contracts' },
-            { value: 'Permissionless Voting', label: 'Permissionless Voting' }
-          ]}></Select>
-        <Button onClick={this.deployTeal}>Deploy Teal Contract</Button>
-        <br></br><br></br><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete App</Button>
+            <PipelineShell>
+              <Select id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
+                { value: 'TestNet', label: 'TestNet' },
+                { value: 'MainNet', label: 'MainNet' }
+              ]}></Select>
+              <br></br><br></br>
+              <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
+                let address = data2.networkAccount.addr;
+                acct = data2;
+                this.setState({ address: address })
+                sender = address
+                console.log(acct);
+              })
+              }>Connect</Button>
+              <h5>{this.state.address}</h5>
+              <Select placeholder="Select Reach contract..." onChange={this.select} options={[
+                { value: 'Reach Contracts', label: 'Reach Contracts' },
+                { value: 'Morra Game', label: 'Morra Game' },
+                { value: 'NFT Auction', label: 'NFT Auction' },
+                { value: 'Popularity Contest', label: 'Popularity Contest' }
+              ]}></Select>
+              <Button onClick={this.deploy}>Deploy & Run Reach</Button>
+              <div align="left">
+                <p><b>Description: </b>{this.state.description}</p>
+                <p><b>Participants: </b>{this.state.participants}</p>
+              </div>
+              <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
+              <Select placeholder="Select TEAL contract..." onChange={this.selectTeal} options={[
+                { value: 'TEAL Contracts', label: 'TEAL Contracts' },
+                { value: 'Permissionless Voting', label: 'Permissionless Voting' }
+              ]}></Select>
+              <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
+              <br></br><br></br><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button>
             </PipelineShell>
           </td>
-          <td valign="top">
-            <textarea style={{"background-color":"black", "color":"yellow"}} id="log" readonly rows="30" cols="50">
-              Testing
-              hello
-            </textarea>
-          </td></tr>
+            <td valign="top">
+              <textarea style={{ "background-color": "black", "color": "yellow" }} id="log" readonly rows="30" cols="50">
+                Testing
+                hello
+              </textarea>
+            </td></tr>
         </table>
         <table>
           <thead><th>TEAL Code</th><th>Frontend Code</th></thead>

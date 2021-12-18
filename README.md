@@ -8,9 +8,11 @@ A project to enable deploying and testing Reach and TEAL smart contracts fully i
 - rename .mjs file from build and paste into `src/reach-backends`
 - export _ALGO from backend
 - copy frontend code to `src/reach-frontends` and rename
-- rerite frontend code `Promise.all()` to enable real-world deployer/participant interaction
+- rewrite frontend code `Promise.all()` to enable real-world deployer/participant interaction
 - replace ctcAlice.getInfo() with parseInt(id) and insert for non-creators
-- Add relevant code to contracts object:
+- replace `console.log` with function append `window.reachLog`
+- remove `import` declarations and replace references to `window` objects
+- Add relevant code to `contracts` object:
 
 ```jsx
 const contracts = {

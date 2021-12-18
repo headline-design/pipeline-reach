@@ -73,10 +73,10 @@ const tealContracts = {
     description: "Custom TEAL"
   },
   "Permissionless Voting": {
-    description: 'allows anyone who holds a unique ASA to vote on two candidates within a specified "round" range'
+    description: 'allows anyone to vote on two candidates within a specified "round" range'
   },
   "Permissioned Voting": {
-    description: 'allows people to vote on two candidates within a specified "round" range'
+    description: 'allows anyone who holds a unique ASA to vote on two candidates within a specified "round" range'
   }
 }
 

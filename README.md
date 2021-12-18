@@ -7,29 +7,17 @@ A project to enable deploying and testing Reach and TEAL smart contracts fully i
 - Compile Reach contract
 - rename .mjs file from build and paste into `src/reach-backends`
 - export _ALGO from backend
-- copy frontend code to `public/reach-frontend` and rename
-- change `filename` variable in `reachconvert.mjs` to above name:
-
-```jsx 
-import * as fs from "fs"
-
-var filename = "morraFront"
-```
-- run (currently deprecated, work in progress)
-
-```bash
-node reachconvert.mjs
-```
-
-- rewrite ctcAlice.getInfo() to obtain app id and insert for non creators
-- Add relevant code to contracts object
+- copy frontend code to `src/reach-frontends` and rename
+- rerite frontend code `Promise.all()` to enable real-world deployer/participant interaction
+- replace ctcAlice.getInfo() with parseInt(id) and insert for non-creators
+- Add relevant code to contracts object:
 
 ```jsx
 const contracts = {
-  "NFT Auction": {
-    contract: require('./reach-backends/nftauction.mjs'),
-    description: "An NFT auction",
-    frontend: async function () {
-      let data = await fetch("reach-frontend/nftauctionFront.mjs"); return data.text();
-    }
+    "Morra Game": {
+    contract: require('./reach-backends/morra.mjs'),
+    description: 'Game of two players guessing "fingers"',
+    frontend: require('./reach-frontends/morraFront.mjs')
+      },
   }
+  ```

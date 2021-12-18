@@ -1,4 +1,4 @@
-(async () => {
+export async function run() {
   window.reachLog = "Starting reach..."
 
   function log(input){
@@ -16,4 +16,6 @@
       return '';
     },
   });
-})();
+}
+
+export function getCode(){return String(run)}

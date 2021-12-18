@@ -1,4 +1,4 @@
-(async () => {
+export async function run() {
   window.reachLog = "Starting reach..."
 
   function log(input){
@@ -99,4 +99,6 @@
     makeOwner(accBob   , '   Bob'),
     makeOwner(accClaire, 'Claire'),
   ]);
-})();
+}
+
+export function getCode(){return String(run)}

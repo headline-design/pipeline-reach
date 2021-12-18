@@ -8,7 +8,11 @@ import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
 import { Button, Select, PipelineShell, Input, Link, Flash, Textarea } from 'pipeline-ui'
 
+var role = "Deployer"
+
 window.launchToken = launchToken
+
+window.acct = {}
 
 window.reachLog = "hello world!"
 
@@ -104,40 +108,25 @@ window.stdlib = stdlib
 
 
 const contracts = {
-  "Atomic Swap": {
-    contract: require('./reach-backends/atomicswap.mjs'),
-    description: 'unkown function',
-    frontend: async function () {
-      let data = await fetch("reach-frontend/atomicswapFront.mjs"); return data.text();
-    }
-  },
   "Dan Storage": {
     contract: require('./reach-backends/danstorage.mjs'),
     description: 'Writes then reads data from smart contract 5 times',
-    frontend: async function () {
-      let data = await fetch("reach-frontend/danstorageFront.mjs"); return data.text();
-    }
+    frontend: require('./reach-frontends/danstorageFront.mjs'),
   },
   "Morra Game": {
     contract: require('./reach-backends/morra.mjs'),
     description: 'Game of two players guessing "fingers"',
-    frontend: async function () {
-      let data = await fetch("reach-frontend/morraFront.mjs"); return data.text();
-    }
+    frontend: require('./reach-frontends/morraFront.mjs')
   },
   "NFT Auction": {
     contract: require('./reach-backends/nftauction.mjs'),
     description: "An NFT auction",
-    frontend: async function () {
-      let data = await fetch("reach-frontend/nftauctionFront.mjs"); return data.text();
-    }
+    frontend: require('./reach-frontends/nftauctionFront.mjs')
   },
   "Popularity Contest": {
     contract: require('./reach-backends/popularitycontest.mjs'),
     description: "A vote for two candidates",
-    frontend: async function () {
-      let data = await fetch("reach-frontend/popularitycontestFront.mjs"); return data.text();
-    }
+    frontend: require('./reach-frontends/popularitycontestFront.mjs')
   }
 }
 
@@ -151,11 +140,12 @@ class App extends Component {
       description: "",
       participants: "",
       teal: "",
-      frontend: ""
+      frontend: "",
+      frontendText: ""
     }
   }
 
-  deploy = () => {
+  deploy = async () => {
 
     window.acct = acct
     //code for pipeline 
@@ -169,25 +159,21 @@ class App extends Component {
       }
     */
     try {
-      eval(this.state.frontend)
+      if (contractName === "Morra Game") {
+        if (role === "Deployer") {
+          this.state.frontend.run(role)
+        }
+        else {
+          this.state.frontend.run(role, appId)
+        }
+      }
+      else {
+        this.state.frontend.run()
+      }
     }
     catch (error) { console.log(error) }
 
   }
-
-  async attach() {
-
-    let accAlice = acct
-    accAlice.networkAccount.addr = "C5E5W3BERJALL2ZH4YB3TAP7ZSJH2PJUPDHLGF74YE6DBMQ62AA47IXGNQ"
-    let ctcAlice = accAlice.contract(backend);
-    let ctcBob = acct.contract(backend, ctcAlice.getInfo());
-
-    try {
-      await backend.Bob(ctcBob, contracts[contractName].attach)
-    }
-    catch (error) { console.log(error) }
-  }
-
 
   select = (event) => {
     document.getElementById("appArgs").style.display = "none"
@@ -198,12 +184,20 @@ class App extends Component {
       this.setState({ description: contracts[event.value].description });
       this.setState({ teal: backend._ALGO.appApproval });
       this.setState({ participants: Object.keys(backend._Participants).toString() })
-      contracts[event.value].frontend().then(response => this.setState({ frontend: response }))
+      this.setState({ frontend: contracts[event.value].frontend })
+      this.setState({ frontendText: contracts[event.value].frontend.getCode() })
+      if (contractName === "Morra Game") {
+        document.getElementById("roles").style.display = "block"
+      }
+      else {
+        document.getElementById("roles").style.display = "none"
+      }
     }
     else {
       this.setState({ description: "" })
       this.setState({ teal: "" })
       this.setState({ frontend: "" })
+      document.getElementById("roles").style.display = "none"
     }
   }
 
@@ -235,12 +229,14 @@ class App extends Component {
       this.setState({ teal: tealContracts[event.value].program })
       this.setState({ frontend: "" })
       this.setState({ participants: "" })
+      document.getElementById("roles").style.display = "none"
     }
     else {
       this.setState({ description: "" })
       this.setState({ teal: "" })
       this.setState({ frontend: "" })
       this.setState({ participants: "" })
+      document.getElementById("roles").style.display = "none"
     }
   }
 
@@ -347,6 +343,10 @@ int 1
     custom = true
   }
 
+  selectRole = (event) => {
+    role = event.value;
+  }
+
 
   render() {
     return (
@@ -390,6 +390,13 @@ int 1
                 { value: 'Dan Storage', label: 'Dan Storage' },
                 { value: 'NFT Auction', label: 'NFT Auction' }
               ]}></Select>
+              <div id="roles" style={{ display: "none" }}>
+                <Select placeholder="Select role..." onChange={this.selectRole} options={[
+                  { value: 'Deployer', label: 'Deployer' },
+                  { value: 'Participant', label: 'Participant' },
+                ]}></Select>
+                <Input type="number" placeholder="App Id..." onChange={this.inputAppId}></Input>
+              </div>
               <Button onClick={this.deploy}>Deploy & Run Reach</Button>
               <div align="left">
                 <p><b>Description: </b>{this.state.description}</p>
@@ -451,7 +458,7 @@ int 1
               <td valign="top">
                 <div align="left">
                   <CopyBlock
-                    text={this.state.frontend}
+                    text={this.state.frontendText}
                     language={"js"}
                     showLineNumbers={true}
                     wrapLines

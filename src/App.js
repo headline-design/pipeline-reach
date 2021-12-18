@@ -23,6 +23,7 @@ var appId = 0
 window.appId = 51807989
 
 async function deleteApp() {
+  window.reachLog += ("\n" + "Attempting to delete app...")
   let algodClient = ""
 
   if (net === "TestNet") {
@@ -45,6 +46,7 @@ async function deleteApp() {
   try {
     let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
     console.log(response)
+    window.reachLog += ("\n" + "TXN ID: " + response.txId)
   }
   catch (error) { console.log(error) }
 }
@@ -242,6 +244,7 @@ class App extends Component {
 
   async deployTeal() {
     if (teal !== "") {
+      window.reachLog = "Deploying TEAL..."
       console.log("sender: " + sender)
       let algodClient = ""
 

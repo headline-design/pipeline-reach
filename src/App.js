@@ -83,14 +83,49 @@ const tealContracts = {
 }
 
 const tealNames = ["Permissionless Voting", "Permissioned Voting"]
+const reachNames = ["danstorage", "morra","nftauction","popularitycontest"]
+const reachCNames = ["Dan Storage", "Morra Game","NFT Auction","Popularity Contest"]
 
-async function getContracts(filelist) {
-  for (let i = 0; i < filelist.length; i++) {
-    let name = filelist[i]
-    let data = await fetch("teal/" + filelist[i] + ".txt")
+const contracts = {
+  "Dan Storage": {
+    contract: require('./reach-backends/danstorage.mjs'),
+    description: 'Writes then reads data from smart contract 5 times',
+    frontend: require('./reach-frontends/danstorageFront.mjs'),
+    text: ""
+  },
+  "Morra Game": {
+    contract: require('./reach-backends/morra.mjs'),
+    description: 'Game of two players guessing "fingers"',
+    frontend: require('./reach-frontends/morraFront.mjs'),
+    text: ""
+  },
+  "NFT Auction": {
+    contract: require('./reach-backends/nftauction.mjs'),
+    description: "An NFT auction",
+    frontend: require('./reach-frontends/nftauctionFront.mjs'),
+    text: ""
+  },
+  "Popularity Contest": {
+    contract: require('./reach-backends/popularitycontest.mjs'),
+    description: "A vote for two candidates",
+    frontend: require('./reach-frontends/popularitycontestFront.mjs'),
+    text: ""
+  }
+}
+
+
+async function getContracts() {
+  for (let i = 0; i < tealNames.length; i++) {
+    let name = tealNames[i]
+    let data = await fetch("teal/" + name + ".txt")
     tealContracts[name].program = await data.text()
-    let data2 = await fetch("teal/" + filelist[i] + " clear.txt")
+    let data2 = await fetch("teal/" + name + " clear.txt")
     tealContracts[name].clearProgram = await data2.text()
+  }
+  for (let i = 0; i < reachNames.length; i++){
+    let name = reachNames[i]
+    let data = await fetch("reach-frontends/" + name + "Front.txt")
+    contracts[reachCNames[i]].text = await data.text()
   }
   document.getElementById("loader").style.display = "none"
 }
@@ -107,31 +142,6 @@ const stdlib = loadStdlib('ALGO')
 window.stdlib = stdlib
 
 //change Algo server IP to match your local stdlib devnet IP, or leave with "http://localhost" to test on local machine only.
-
-
-const contracts = {
-  "Dan Storage": {
-    contract: require('./reach-backends/danstorage.mjs'),
-    description: 'Writes then reads data from smart contract 5 times',
-    frontend: require('./reach-frontends/danstorageFront.mjs'),
-  },
-  "Morra Game": {
-    contract: require('./reach-backends/morra.mjs'),
-    description: 'Game of two players guessing "fingers"',
-    frontend: require('./reach-frontends/morraFront.mjs')
-  },
-  "NFT Auction": {
-    contract: require('./reach-backends/nftauction.mjs'),
-    description: "An NFT auction",
-    frontend: require('./reach-frontends/nftauctionFront.mjs')
-  },
-  "Popularity Contest": {
-    contract: require('./reach-backends/popularitycontest.mjs'),
-    description: "A vote for two candidates",
-    frontend: require('./reach-frontends/popularitycontestFront.mjs')
-  }
-}
-
 
 
 class App extends Component {
@@ -187,7 +197,7 @@ class App extends Component {
       this.setState({ teal: backend._ALGO.appApproval });
       this.setState({ participants: Object.keys(backend._Participants).toString() })
       this.setState({ frontend: contracts[event.value].frontend })
-      this.setState({ frontendText: contracts[event.value].frontend.getCode() })
+      this.setState({ frontendText: contracts[event.value].text })
       if (contractName === "Morra Game") {
         document.getElementById("roles").style.display = "block"
       }
@@ -230,6 +240,7 @@ class App extends Component {
       this.setState({ description: tealContracts[event.value].description });
       this.setState({ teal: tealContracts[event.value].program })
       this.setState({ frontend: "" })
+      this.setState({ frontendText: "" })
       this.setState({ participants: "" })
       document.getElementById("roles").style.display = "none"
     }
@@ -237,6 +248,7 @@ class App extends Component {
       this.setState({ description: "" })
       this.setState({ teal: "" })
       this.setState({ frontend: "" })
+      this.setState({ frontendText: "" })
       this.setState({ participants: "" })
       document.getElementById("roles").style.display = "none"
     }
@@ -325,7 +337,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    getContracts(tealNames);
+    getContracts();
     setInterval(function () {
       let textarea = document.getElementById('log');
       textarea.value = window.reachLog

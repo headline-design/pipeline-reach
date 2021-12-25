@@ -382,12 +382,14 @@ int 1
           WARNING!!! Reach code must run to completion, at which point a prompt will appear to allow the deletion of the smart contract. Due to the nature of the Reach code, a significant amount of time may pass while it appears nothing is happening. Please be patient and sign all transactions!
         </Flash>
         <table><thead><th></th><th>Log</th></thead>
-          <tr><td valign="top">
+          <tr class="pipeline-shell"><td valign="top">
             <PipelineShell>
+              <div class="selectorbox">
               <Select id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
                 { value: 'TestNet', label: 'TestNet' }
               ]}></Select>
-              <br></br><br></br>
+              
+              <br></br>
               <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
                 let address = data2.networkAccount.addr;
                 acct = data2;
@@ -396,6 +398,9 @@ int 1
                 console.log(acct);
               })
               }>Connect</Button>
+              </div>
+              <br></br>
+              <div class="selectorbox">
               <h5>{this.state.address}</h5>
               <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
               <Select placeholder="Select Reach contract..." onChange={this.select} options={[
@@ -412,18 +417,24 @@ int 1
                 ]}></Select>
                 <Input type="number" placeholder="App Id..." onChange={this.inputAppId}></Input>
               </div>
+              <br></br>
               <Button onClick={this.deploy}>Deploy & Run Reach</Button>
               <div align="left">
                 <p><b>Description: </b>{this.state.description}</p>
                 <p><b>Participants: </b>{this.state.participants}</p>
               </div>
+              <br></br>
               <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
+              </div>
+              <br></br>
+              <div class="selectorbox">
               <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
               <Select placeholder="Select TEAL contract..." onChange={this.selectTeal} options={[
                 { value: 'TEAL Contracts', label: 'TEAL Contracts' },
                 { value: 'Permissionless Voting', label: 'Permissionless Voting' },
                 { value: 'Permissioned Voting', label: 'Permissioned Voting' }
               ]}></Select>
+              <br></br>
               <Button onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
               <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
               <div id="appArgs" style={{ display: "none" }}>
@@ -435,9 +446,12 @@ int 1
                 <textarea id="argInput">{"[\n]"}</textarea>
               </div>
               <p></p>
+              <br></br>
               <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
-              <br></br><br></br><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button>
+              </div>
+              <br></br><br></br><div class="selectorbox"><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </PipelineShell>
+            
           </td>
             <td valign="top">
               <textarea style={{ "background-color": "black", "color": "yellow" }} id="log" readonly rows="30" cols="50">
@@ -446,7 +460,7 @@ int 1
               </textarea>
             </td></tr>
         </table>
-        <table>
+        <table class="teal-table">
           <thead><th>TEAL Code</th><th>Frontend Code</th></thead>
           <tbody>
             <tr>

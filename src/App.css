@@ -2,6 +2,50 @@
   text-align: center;
 }
 
+:root{
+  overflow: auto;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.pipeline-shell{
+  box-shadow: none !important;
+  border-radius: 0px !important;
+  padding-right: 2rem;
+}
+
+.app {
+  max-width: 1000px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  box-shadow: 0 30px 60px 0 rgb(90 116 148 / 40%), 4px 4px 0 0 rgb(210 210 249);
+  border-radius: 10px;
+  max-width: 1000px;
+  padding: 2rem;
+  margin: 0 auto;
+  overflow: hidden;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  text-align: center;
+  border-style: solid;
+  border-color: #1c1ce1;
+}
+
+.selectorbox {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+::-webkit-scrollbar:scroll
+
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

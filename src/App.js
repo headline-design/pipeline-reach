@@ -495,11 +495,8 @@ int 1
               </textarea>
             </td></tr>
         </table>
-        <table class="teal-table" align-contents="center">
-          <thead><th>TEAL Code</th><th>Frontend Code</th></thead>
-          <tbody>
-            <tr>
-              <td valign="top" maxWidth="%50">
+        <p>Teal Code, Frontend Code</p>
+        <div align="left" className="snoopy" style={{display: "flex"}}>
                
                   <CopyBlock
                     text={this.state.teal}
@@ -509,20 +506,16 @@ int 1
                     theme={dracula}
                     codeBlock
                     customStyle={{
-                      width: "50%",
                       height: 'auto',
-                      overflow: 'false',
+                      width: "50%",
+                      overflow: 'scroll',
                       align: "left",
                       background: "#fff",
                       backgroundColor: "#fff",
                       borderColor: "#D7DAE0",
                     }}
                   />
-          
-              </td>
-              <td valign="top">
-                <div align="left">
-                  <CopyBlock
+                <CopyBlock
                     text={this.state.frontendText}
                     language={"js"}
                     showLineNumbers={true}
@@ -532,18 +525,14 @@ int 1
                     customStyle={{
                       width: "50%",
                       height: 'auto',
-                      overflow: 'auto',
+                      overflow: 'scroll',
                       align: "left",
                       background: "#fff",
                       backgroundColor: "#fff",
                       borderColor: "#D7DAE0",
                     }}
                   />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  </div>
       </div>
     )
   }

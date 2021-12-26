@@ -1,26 +1,25 @@
-import './App.css';
+//import './App.css';
 import React, { Component } from 'react';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
-import { Button, Select, PipelineShell, Input, Link, Flash, Textarea, AlgoAddress} from 'pipeline-ui'
+import { Button, Select, PipelineShell, Input, Link, Flash, Textarea, AlgoAddress } from 'pipeline-ui'
 
 var role = "Deployer"
 
 const customStyles = {
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isFocused ?"#d1d1fa": "#ffffff00",
-    backgroundColor: state.isSelected ? '#d1d1fa' : '#ffffff00',
+    backgroundColor: state.isSelected ? "#d1d1fa" : "#ffffff00",
     color: state.isSelected ? 'black' : 'rgb(51, 54, 61)',
     cursor: "pointer",
     isActive: true,
     autoFocus: true,
     isFixed: true
 
-    
+
   }),
   control: () => ({
     // none of react-select's styles are passed to <Control />
@@ -114,8 +113,8 @@ const tealContracts = {
 }
 
 const tealNames = ["Permissionless Voting", "Permissioned Voting"]
-const reachNames = ["danstorage", "morra","nftauction","popularitycontest"]
-const reachCNames = ["Dan Storage", "Morra Game","NFT Auction","Popularity Contest"]
+const reachNames = ["danstorage", "morra", "nftauction", "popularitycontest"]
+const reachCNames = ["Dan Storage", "Morra Game", "NFT Auction", "Popularity Contest"]
 
 const contracts = {
   "Dan Storage": {
@@ -153,7 +152,7 @@ async function getContracts() {
     let data2 = await fetch("teal/" + name + " clear.txt")
     tealContracts[name].clearProgram = await data2.text()
   }
-  for (let i = 0; i < reachNames.length; i++){
+  for (let i = 0; i < reachNames.length; i++) {
     let name = reachNames[i]
     let data = await fetch("reach-frontends/" + name + "Front.txt")
     contracts[reachCNames[i]].text = await data.text()
@@ -413,83 +412,83 @@ int 1
           WARNING!!! Reach code must run to completion, at which point a prompt will appear to allow the deletion of the smart contract. Due to the nature of the Reach code, a significant amount of time may pass while it appears nothing is happening. Please be patient and sign all transactions!
         </Flash>
         <table><thead><th>Modules</th><th>Log</th></thead>
-        
+
           <tr class="pipeline-shell"><td valign="top">
             <PipelineShell>
               <div class="selectorbox">
-              <Select       styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..."  onChange={this.toggleNet} options={[
-                { value: 'TestNet', label: 'TestNet' }
-              ]}></Select>
-              
-              <br></br>
-              <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
-                let address = data2.networkAccount.addr;
-                acct = data2;
-                this.setState({ address: address })
-                sender = address
-                console.log(acct);
-              })
-              }>Connect</Button>
-              <AlgoAddress address={this.state.address}></AlgoAddress>
-              </div>
-              <br></br>
-              <div className="selectorbox">
-              <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
-              <br></br><br></br>
-              <Select placeholder="Select Reach contract..." styles={customStyles} onChange={this.select} options={[
-                { value: 'Reach Contracts', label: 'Reach Contracts' },
-                { value: 'Morra Game', label: 'Morra Game' },
-                { value: 'Popularity Contest', label: 'Popularity Contest' },
-                { value: 'Dan Storage', label: 'Dan Storage' },
-                { value: 'NFT Auction', label: 'NFT Auction' }
-              ]}></Select>
-              <div id="roles" style={{ display: "none" }}>
-                <Select styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
-                  { value: 'Deployer', label: 'Deployer & Participant' },
-                  { value: 'Participant', label: 'Participant' },
+                <Select styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
+                  { value: 'TestNet', label: 'TestNet' }
                 ]}></Select>
-                <Input type="number" placeholder="App Id..." onChange={this.inputAppId}></Input>
-              </div>
-              <br></br>
-              <Button onClick={this.deploy}>Deploy & Run Reach</Button>
-              <div align="left">
-                <p><b>Description: </b>{this.state.description}</p>
-                <p><b>Participants: </b>{this.state.participants}</p>
-              </div>
-              <br></br>
-              <Button  onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
+
+                <br></br>
+                <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
+                  let address = data2.networkAccount.addr;
+                  acct = data2;
+                  this.setState({ address: address })
+                  sender = address
+                  console.log(acct);
+                })
+                }>Connect</Button>
+                <AlgoAddress address={this.state.address}></AlgoAddress>
               </div>
               <br></br>
               <div className="selectorbox">
-              <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
-              <br></br><br></br>
-              <Select placeholder="Select TEAL contract..." styles={customStyles} onChange={this.selectTeal} options={[
-                { value: 'TEAL Contracts', label: 'TEAL Contracts' },
-                { value: 'Permissionless Voting', label: 'Permissionless Voting' },
-                { value: 'Permissioned Voting', label: 'Permissioned Voting' }
-              ]}></Select>
-              <br></br>
-              <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
-              <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
-  
-              <div id="appArgs" style={{ display: "none", }}>
-                <div style={{display: "flex",flexDirection: "column"}}>
-                <label>Local Byte Slices</label><input id="lbyte"></input><br></br>
-                <label>Global Byte Slices</label><input id="gbyte"></input><br></br>
-                <label>Local Integers</label><input id="lint"></input><br></br>
-                <label>Global Integers</label><input id="gint"></input><br></br>
-                <p>App Args</p>
-                <textarea id="argInput">{"[\n]"}</textarea>
+                <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
+                <br></br><br></br>
+                <Select placeholder="Select Reach contract..." styles={customStyles} onChange={this.select} options={[
+                  { value: 'Reach Contracts', label: 'Reach Contracts' },
+                  { value: 'Morra Game', label: 'Morra Game' },
+                  { value: 'Popularity Contest', label: 'Popularity Contest' },
+                  { value: 'Dan Storage', label: 'Dan Storage' },
+                  { value: 'NFT Auction', label: 'NFT Auction' }
+                ]}></Select>
+                <div id="roles" style={{ display: "none" }}>
+                  <Select styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
+                    { value: 'Deployer', label: 'Deployer & Participant' },
+                    { value: 'Participant', label: 'Participant' },
+                  ]}></Select>
+                  <Input type="number" placeholder="App Id..." onChange={this.inputAppId}></Input>
                 </div>
+                <br></br>
+                <Button onClick={this.deploy}>Deploy & Run Reach</Button>
+                <div align="left">
+                  <p><b>Description: </b>{this.state.description}</p>
+                  <p><b>Participants: </b>{this.state.participants}</p>
+                </div>
+                <br></br>
+                <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
               </div>
-              <br></br><br></br>
-              <Button className="btn-outlinez" onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
-              <p></p>
+              <br></br>
+              <div className="selectorbox">
+                <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
+                <br></br><br></br>
+                <Select placeholder="Select TEAL contract..." styles={customStyles} onChange={this.selectTeal} options={[
+                  { value: 'TEAL Contracts', label: 'TEAL Contracts' },
+                  { value: 'Permissionless Voting', label: 'Permissionless Voting' },
+                  { value: 'Permissioned Voting', label: 'Permissioned Voting' }
+                ]}></Select>
+                <br></br>
+                <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
+                <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
+
+                <div id="appArgs" style={{ display: "none", }}>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <label>Local Byte Slices</label><input id="lbyte"></input><br></br>
+                    <label>Global Byte Slices</label><input id="gbyte"></input><br></br>
+                    <label>Local Integers</label><input id="lint"></input><br></br>
+                    <label>Global Integers</label><input id="gint"></input><br></br>
+                    <p>App Args</p>
+                    <textarea id="argInput">{"[\n]"}</textarea>
+                  </div>
+                </div>
+                <br></br><br></br>
+                <Button className="btn-outlinez" onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
+                <p></p>
 
               </div>
               <br></br><br></br><div class="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </PipelineShell>
-            
+
           </td>
             <td valign="top">
               <textarea style={{ "background-color": "black", "color": "yellow" }} id="log" readonly rows="65" cols="50">
@@ -499,43 +498,43 @@ int 1
             </td></tr>
         </table>
         <table width="100%"><thead><th align="center">Teal Code</th><th align="center">Frontend Code</th></thead></table>
-        <div align="left" className="snoopy" style={{display: "flex"}}>
-               
-                  <CopyBlock
-                    text={this.state.teal}
-                    language={"cpp"}
-                    showLineNumbers={true}
-                    wrapLines
-                    theme={dracula}
-                    codeBlock
-                    customStyle={{
-                      height: 'auto',
-                      width: "50%",
-                      overflow: 'auto',
-                      align: "left",
-                      background: "#fff",
-                      backgroundColor: "#fff",
-                      borderColor: "#D7DAE0",
-                    }}
-                  />
-                <CopyBlock
-                    text={this.state.frontendText}
-                    language={"js"}
-                    showLineNumbers={true}
-                    wrapLines
-                    theme={dracula}
-                    codeBlock
-                    customStyle={{
-                      width: "50%",
-                      height: 'auto',
-                      overflow: 'auto',
-                      align: "left",
-                      background: "#fff",
-                      backgroundColor: "#fff",
-                      borderColor: "#D7DAE0",
-                    }}
-                  />
-                  </div>
+        <div align="left" className="snoopy" style={{ display: "flex" }}>
+
+          <CopyBlock
+            text={this.state.teal}
+            language={"cpp"}
+            showLineNumbers={true}
+            wrapLines
+            theme={dracula}
+            codeBlock
+            customStyle={{
+              height: 'auto',
+              width: "50%",
+              overflow: 'auto',
+              align: "left",
+              background: "#fff",
+              backgroundColor: "#fff",
+              borderColor: "#D7DAE0",
+            }}
+          />
+          <CopyBlock
+            text={this.state.frontendText}
+            language={"js"}
+            showLineNumbers={true}
+            wrapLines
+            theme={dracula}
+            codeBlock
+            customStyle={{
+              width: "50%",
+              height: 'auto',
+              overflow: 'auto',
+              align: "left",
+              background: "#fff",
+              backgroundColor: "#fff",
+              borderColor: "#D7DAE0",
+            }}
+          />
+        </div>
       </div>
     )
   }

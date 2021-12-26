@@ -1,0 +1,2 @@
+(this["webpackJsonppipeline-reach"]=this["webpackJsonppipeline-reach"]||[]).push([[60],{528:function(t,e,i){"use strict";function n(t){t.languages.ini={comment:/^[ \t]*[;#].*$/m,selector:/^[ \t]*\[.*?\]/m,constant:/^[ \t]*[^\s=]+?(?=[ \t]*=)/m,"attr-value":{pattern:/=.*/,inside:{punctuation:/^[=]/}}}}t.exports=n,n.displayName="ini",n.aliases=[]}}]);
+//# sourceMappingURL=react-syntax-highlighter_languages_refractor_ini.a1ab93a9.chunk.js.map

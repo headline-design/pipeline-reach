@@ -430,10 +430,10 @@ int 1
                 console.log(acct);
               })
               }>Connect</Button>
+              <AlgoAddress address={this.state.address}></AlgoAddress>
               </div>
               <br></br>
               <div className="selectorbox">
-              <AlgoAddress address={this.state.address}></AlgoAddress>
               <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
               <br></br><br></br>
               <Select placeholder="Select Reach contract..." styles={customStyles} onChange={this.select} options={[

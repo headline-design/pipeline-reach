@@ -1,6 +1,5 @@
 import './App.css';
 import React, { Component } from 'react';
-import './App.css';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
@@ -496,12 +495,12 @@ int 1
               </textarea>
             </td></tr>
         </table>
-        <table class="teal-table">
+        <table class="teal-table" align-contents="center">
           <thead><th>TEAL Code</th><th>Frontend Code</th></thead>
           <tbody>
             <tr>
-              <td valign="top">
-                <div align="left">
+              <td valign="top" maxWidth="%50">
+               
                   <CopyBlock
                     text={this.state.teal}
                     language={"cpp"}
@@ -510,6 +509,7 @@ int 1
                     theme={dracula}
                     codeBlock
                     customStyle={{
+                      width: "50%",
                       height: 'auto',
                       overflow: 'false',
                       align: "left",
@@ -518,7 +518,7 @@ int 1
                       borderColor: "#D7DAE0",
                     }}
                   />
-                </div>
+          
               </td>
               <td valign="top">
                 <div align="left">
@@ -530,6 +530,7 @@ int 1
                     theme={dracula}
                     codeBlock
                     customStyle={{
+                      width: "50%",
                       height: 'auto',
                       overflow: 'auto',
                       align: "left",

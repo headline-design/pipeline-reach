@@ -422,7 +422,7 @@ int 1
               ]}></Select>
               
               <br></br>
-              <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
+              <Button className="furby" onClick={() => stdlib.getDefaultAccount().then(data2 => {
                 let address = data2.networkAccount.addr;
                 acct = data2;
                 this.setState({ address: address })

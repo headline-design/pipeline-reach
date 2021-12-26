@@ -1,4 +1,4 @@
-//import './App.css';
+import './App.css';
 import React, { Component } from 'react';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
@@ -421,7 +421,7 @@ int 1
                 ]}></Select>
 
                 <br></br>
-                <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
+                <Button className="furby" onClick={() => stdlib.getDefaultAccount().then(data2 => {
                   let address = data2.networkAccount.addr;
                   acct = data2;
                   this.setState({ address: address })
@@ -450,13 +450,13 @@ int 1
                   <Input type="number" placeholder="App Id..." onChange={this.inputAppId}></Input>
                 </div>
                 <br></br>
-                <Button onClick={this.deploy}>Deploy & Run Reach</Button>
+                <Button className="furby" onClick={this.deploy}>Deploy & Run Reach</Button>
                 <div align="left">
                   <p><b>Description: </b>{this.state.description}</p>
                   <p><b>Participants: </b>{this.state.participants}</p>
                 </div>
                 <br></br>
-                <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
+                <Button className="furby" onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
               </div>
               <br></br>
               <div className="selectorbox">
@@ -468,7 +468,7 @@ int 1
                   { value: 'Permissioned Voting', label: 'Permissioned Voting' }
                 ]}></Select>
                 <br></br>
-                <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
+                <Button className="furby" onClick={this.deployTeal}>Deploy TEAL Contract</Button>
                 <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
 
                 <div id="appArgs" style={{ display: "none", }}>
@@ -486,7 +486,7 @@ int 1
                 <p></p>
 
               </div>
-              <br></br><br></br><div class="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
+              <br></br><br></br><div class="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </PipelineShell>
 
           </td>

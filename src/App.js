@@ -471,13 +471,16 @@ int 1
               <br></br>
               <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
               <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
-              <div id="appArgs" style={{ display: "block" }}>
+  
+              <div id="appArgs" style={{ display: "none", }}>
+                <div style={{display: "flex",flexDirection: "column"}}>
                 <label>Local Byte Slices</label><input id="lbyte"></input><br></br>
                 <label>Global Byte Slices</label><input id="gbyte"></input><br></br>
                 <label>Local Integers</label><input id="lint"></input><br></br>
                 <label>Global Integers</label><input id="gint"></input><br></br>
                 <p>App Args</p>
                 <textarea id="argInput">{"[\n]"}</textarea>
+                </div>
               </div>
               <br></br><br></br>
               <Button className="btn-outlinez" onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>

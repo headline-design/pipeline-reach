@@ -1,2 +1,0 @@
-(this["webpackJsonppipeline-reach"]=this["webpackJsonppipeline-reach"]||[]).push([[55],{523:function(e,a,s){"use strict";function i(e){e.languages.hsts={directive:{pattern:/\b(?:max-age=|includeSubDomains|preload)/,alias:"keyword"},safe:{pattern:/\d{8,}/,alias:"selector"},unsafe:{pattern:/\d{1,7}/,alias:"function"}}}e.exports=i,i.displayName="hsts",i.aliases=[]}}]);
-//# sourceMappingURL=react-syntax-highlighter_languages_refractor_hsts.b18b7733.chunk.js.map

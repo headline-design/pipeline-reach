@@ -183,7 +183,8 @@ class App extends Component {
       participants: "",
       teal: "",
       frontend: "",
-      frontendText: ""
+      frontendText: "",
+      showButton: "Hide TEAL Code"
     }
   }
 
@@ -392,6 +393,17 @@ int 1
     role = event.value;
   }
 
+  handleShowTeal = () => {
+    if (this.state.showButton === "Show TEAL Code") {
+      this.setState({ showButton: "Hide TEAL Code" })
+      document.getElementById("tealdiv").style.display = "block"
+    }
+    else {
+      this.setState({ showButton: "Show TEAL Code" })
+      document.getElementById("tealdiv").style.display = "none"
+    }
+  }
+
 
   render() {
     return (
@@ -488,30 +500,33 @@ int 1
               <br></br><br></br><th className="prop-label">Delete Contract</th><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </div>
             <br></br>
-            <th className="prop-label">TEAL Code</th>
-            <CopyBlock
-            text={this.state.teal}
-            language={"cpp"}
-            showLineNumbers={true}
-            wrapLines
-            theme={dracula}
-            codeBlock
-            customStyle={{
-              height: 'auto',
-              width: "100%",
-              overflow: 'auto',
-              align: "left",
-              padding: "unset",
-              background: "#fff",
-              backgroundColor: "#fff",
-              borderColor: "#D7DAE0",
-            }}
-          />
+            <Button onClick={this.handleShowTeal}>{this.state.showButton}</Button>
+            <div id="tealdiv" style={{ display: "block" }}>
+              <h1 className="prop-label">TEAL Code</h1>
+              <CopyBlock
+                text={this.state.teal}
+                language={"cpp"}
+                showLineNumbers={true}
+                wrapLines
+                theme={dracula}
+                codeBlock
+                customStyle={{
+                  height: 'auto',
+                  width: "100%",
+                  overflow: 'auto',
+                  align: "left",
+                  padding: "unset",
+                  background: "#fff",
+                  backgroundColor: "#fff",
+                  borderColor: "#D7DAE0",
+                }}
+              />
+            </div>
 
           </td>
             <td valign="top" className="module-right">
-            <th className="prop-label">Contract Details</th>
-            <div className="selectorbox">
+              <th className="prop-label">Contract Details</th>
+              <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br>
                 <div id="roles" style={{ display: "none" }}>
@@ -535,24 +550,24 @@ int 1
               <br></br><br></br>
               <th className="prop-label">Frontend Code</th>
               <CopyBlock
-            text={this.state.frontendText}
-            language={"js"}
-            showLineNumbers={true}
-            wrapLines
-            theme={dracula}
-            codeBlock
-            customStyle={{
-              width: "100%",
-              height: 'auto',
-              overflow: 'auto',
-              padding: "unset",
-              textAlign: "left",
-              align: "left",
-              background: "#fff",
-              backgroundColor: "#fff",
-              borderColor: "#D7DAE0",
-            }}
-          />
+                text={this.state.frontendText}
+                language={"js"}
+                showLineNumbers={true}
+                wrapLines
+                theme={dracula}
+                codeBlock
+                customStyle={{
+                  width: "100%",
+                  height: 'auto',
+                  overflow: 'auto',
+                  padding: "unset",
+                  textAlign: "left",
+                  align: "left",
+                  background: "#fff",
+                  backgroundColor: "#fff",
+                  borderColor: "#D7DAE0",
+                }}
+              />
             </td></tr>
         </table>
       </div>

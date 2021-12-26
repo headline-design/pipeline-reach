@@ -486,7 +486,7 @@ int 1
                 <p></p>
 
               </div>
-              <br></br><br></br><div class="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
+              <br></br><br></br><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </PipelineShell>
 
           </td>

@@ -498,7 +498,7 @@ int 1
               </textarea>
             </td></tr>
         </table>
-        <p>Teal Code, Frontend Code</p>
+        <table width="100%"><thead><th align="center">Teal Code</th><th align="center">Frontend Code</th></thead></table>
         <div align="left" className="snoopy" style={{display: "flex"}}>
                
                   <CopyBlock

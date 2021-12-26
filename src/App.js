@@ -411,10 +411,10 @@ int 1
         <Flash my={3} variant="danger">
           WARNING!!! Reach code must run to completion, at which point a prompt will appear to allow the deletion of the smart contract. Due to the nature of the Reach code, a significant amount of time may pass while it appears nothing is happening. Please be patient and sign all transactions!
         </Flash>
-        <table><thead><th>Modules</th><th>Log</th></thead>
+        <table><thead></thead>
 
-          <tr class="pipeline-shell"><td valign="top">
-            <PipelineShell>
+          <tr className="breakpoint-1" ><td valign="top" className="module-left"><th className="prop-label">Dev Environment</th>
+            <div>
               <div class="selectorbox">
                 <Select styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
                   { value: 'TestNet', label: 'TestNet' }
@@ -432,6 +432,7 @@ int 1
                 <AlgoAddress address={this.state.address}></AlgoAddress>
               </div>
               <br></br>
+              <th className="prop-label">Reach Contracts</th>
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br><br></br>
@@ -447,18 +448,15 @@ int 1
                     { value: 'Deployer', label: 'Deployer & Participant' },
                     { value: 'Participant', label: 'Participant' },
                   ]}></Select>
-                  <Input type="number" placeholder="App Id..." onChange={this.inputAppId}></Input>
+                  <Input className="pipeline-input" type="number" placeholder="App Id..." onChange={this.inputAppId}></Input>
                 </div>
                 <br></br>
                 <Button className="furby" onClick={this.deploy}>Deploy & Run Reach</Button>
-                <div align="left">
-                  <p><b>Description: </b>{this.state.description}</p>
-                  <p><b>Participants: </b>{this.state.participants}</p>
-                </div>
                 <br></br>
                 <Button className="furby" onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
               </div>
               <br></br>
+              <th className="prop-label">TEAL Contracts</th>
               <div className="selectorbox">
                 <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
                 <br></br><br></br>
@@ -468,39 +466,30 @@ int 1
                   { value: 'Permissioned Voting', label: 'Permissioned Voting' }
                 ]}></Select>
                 <br></br>
+                <div id="appArgs" style={{ display: "none", }}>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <input placeholder="Local Byte Slices" className="pipeline-input" id="lbyte"></input>
+                    <input placeholder="Global Byte Slices" className="pipeline-input" id="gbyte"></input>
+                    <input placeholder="Local Integers" className="pipeline-input" id="lint"></input>
+                    <input placeholder="Global Integers" className="pipeline-input" id="gint"></input>
+                    <p>App Args</p>
+                    <textarea placeholder="Global Integers" className="pipeline-input" id="argInput">{"[\n]"}</textarea>
+                  </div>
+                </div>
                 <Button className="furby" onClick={this.deployTeal}>Deploy TEAL Contract</Button>
                 <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
 
-                <div id="appArgs" style={{ display: "none", }}>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <label>Local Byte Slices</label><input id="lbyte"></input><br></br>
-                    <label>Global Byte Slices</label><input id="gbyte"></input><br></br>
-                    <label>Local Integers</label><input id="lint"></input><br></br>
-                    <label>Global Integers</label><input id="gint"></input><br></br>
-                    <p>App Args</p>
-                    <textarea id="argInput">{"[\n]"}</textarea>
-                  </div>
-                </div>
+
                 <br></br><br></br>
                 <Button className="btn-outlinez" onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
                 <p></p>
 
               </div>
-              <br></br><br></br><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
-            </PipelineShell>
-
-          </td>
-            <td valign="top">
-              <textarea style={{ "background-color": "black", "color": "yellow" }} id="log" readonly rows="65" cols="50">
-                Testing
-                hello
-              </textarea>
-            </td></tr>
-        </table>
-        <table width="100%"><thead><th align="center">Teal Code</th><th align="center">Frontend Code</th></thead></table>
-        <div align="left" className="snoopy" style={{ display: "flex" }}>
-
-          <CopyBlock
+              <br></br><br></br><th className="prop-label">Delete Contract</th><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
+            </div>
+            <br></br>
+            <th className="prop-label">TEAL Code</th>
+            <CopyBlock
             text={this.state.teal}
             language={"cpp"}
             showLineNumbers={true}
@@ -509,15 +498,43 @@ int 1
             codeBlock
             customStyle={{
               height: 'auto',
-              width: "50%",
+              width: "100%",
               overflow: 'auto',
               align: "left",
+              padding: "unset",
               background: "#fff",
               backgroundColor: "#fff",
               borderColor: "#D7DAE0",
             }}
           />
-          <CopyBlock
+
+          </td>
+            <td valign="top" className="module-right">
+            <th className="prop-label">Contract Details</th>
+            <div className="selectorbox">
+                <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
+                <br></br>
+                <div id="roles" style={{ display: "none" }}>
+                  <Select styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
+                    { value: 'Deployer', label: 'Deployer & Participant' },
+                    { value: 'Participant', label: 'Participant' },
+                  ]}></Select>
+                </div>
+                <br></br>
+                <div align="left">
+                  <p><b>Description: </b>{this.state.description}</p>
+                  <p><b>Participants: </b>{this.state.participants}</p>
+                </div>
+                <br></br>
+              </div>
+              <th className="prop-label">Log</th>
+              <textarea style={{ "background-color": "black", "color": "yellow", "width": "100%" }} id="log" readonly rows="65" cols="50">
+                Testing
+                hello
+              </textarea>
+              <br></br><br></br>
+              <th className="prop-label">Frontend Code</th>
+              <CopyBlock
             text={this.state.frontendText}
             language={"js"}
             showLineNumbers={true}
@@ -525,16 +542,19 @@ int 1
             theme={dracula}
             codeBlock
             customStyle={{
-              width: "50%",
+              width: "100%",
               height: 'auto',
               overflow: 'auto',
+              padding: "unset",
+              textAlign: "left",
               align: "left",
               background: "#fff",
               backgroundColor: "#fff",
               borderColor: "#D7DAE0",
             }}
           />
-        </div>
+            </td></tr>
+        </table>
       </div>
     )
   }

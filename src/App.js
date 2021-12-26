@@ -422,7 +422,7 @@ int 1
               ]}></Select>
               
               <br></br>
-              <Button className="furby" onClick={() => stdlib.getDefaultAccount().then(data2 => {
+              <Button onClick={() => stdlib.getDefaultAccount().then(data2 => {
                 let address = data2.networkAccount.addr;
                 acct = data2;
                 this.setState({ address: address })
@@ -457,7 +457,7 @@ int 1
                 <p><b>Participants: </b>{this.state.participants}</p>
               </div>
               <br></br>
-              <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
+              <Button  onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
               </div>
               <br></br>
               <div className="selectorbox">
@@ -511,7 +511,7 @@ int 1
                     customStyle={{
                       height: 'auto',
                       width: "50%",
-                      overflow: 'scroll',
+                      overflow: 'auto',
                       align: "left",
                       background: "#fff",
                       backgroundColor: "#fff",
@@ -528,7 +528,7 @@ int 1
                     customStyle={{
                       width: "50%",
                       height: 'auto',
-                      overflow: 'scroll',
+                      overflow: 'auto',
                       align: "left",
                       background: "#fff",
                       backgroundColor: "#fff",

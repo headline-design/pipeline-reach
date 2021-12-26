@@ -471,7 +471,7 @@ int 1
               <br></br>
               <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
               <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
-              <div id="appArgs" style={{ display: "none" }}>
+              <div id="appArgs" style={{ display: "block" }}>
                 <label>Local Byte Slices</label><input id="lbyte"></input><br></br>
                 <label>Global Byte Slices</label><input id="gbyte"></input><br></br>
                 <label>Local Integers</label><input id="lint"></input><br></br>

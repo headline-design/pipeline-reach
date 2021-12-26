@@ -10,6 +10,38 @@ import { Button, Select, PipelineShell, Input, Link, Flash, Textarea } from 'pip
 
 var role = "Deployer"
 
+const customStyles = {
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isFocused ?"#d1d1fa": "#ffffff00",
+    backgroundColor: state.isSelected ? '#d1d1fa' : '#ffffff00',
+    color: state.isSelected ? 'black' : 'rgb(51, 54, 61)',
+    cursor: "pointer",
+    isActive: true,
+    autoFocus: true,
+    isFixed: true
+
+    
+  }),
+  control: () => ({
+    // none of react-select's styles are passed to <Control />
+    display: "flex",
+    cursor: "pointer",
+    borderStyle: "solid",
+    borderRadius: "4px",
+    borderWidth: "1px",
+    borderColor: "hsl(0, 0%, 80%)",
+    backgroundColor: "#fff",
+    isFixed: true,
+    autoFocus: true
+  }),
+  singleValue: (provided, state) => {
+    const opacity = state.isDisabled ? 0.5 : 1;
+    const transition = 'opacity 300ms';
+    return { ...provided, opacity, transition, };
+  }
+}
+
 window.launchToken = launchToken
 
 window.acct = {}
@@ -381,11 +413,12 @@ int 1
         <Flash my={3} variant="danger">
           WARNING!!! Reach code must run to completion, at which point a prompt will appear to allow the deletion of the smart contract. Due to the nature of the Reach code, a significant amount of time may pass while it appears nothing is happening. Please be patient and sign all transactions!
         </Flash>
-        <table><thead><th></th><th>Log</th></thead>
+        <table><thead><th>Modules</th><th>Log</th></thead>
+        
           <tr class="pipeline-shell"><td valign="top">
             <PipelineShell>
               <div class="selectorbox">
-              <Select id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
+              <Select       styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..."  onChange={this.toggleNet} options={[
                 { value: 'TestNet', label: 'TestNet' }
               ]}></Select>
               
@@ -403,7 +436,8 @@ int 1
               <div class="selectorbox">
               <h5>{this.state.address}</h5>
               <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
-              <Select placeholder="Select Reach contract..." onChange={this.select} options={[
+              <br></br><br></br>
+              <Select placeholder="Select Reach contract..." styles={customStyles} onChange={this.select} options={[
                 { value: 'Reach Contracts', label: 'Reach Contracts' },
                 { value: 'Morra Game', label: 'Morra Game' },
                 { value: 'Popularity Contest', label: 'Popularity Contest' },
@@ -411,7 +445,7 @@ int 1
                 { value: 'NFT Auction', label: 'NFT Auction' }
               ]}></Select>
               <div id="roles" style={{ display: "none" }}>
-                <Select placeholder="Select role..." onChange={this.selectRole} options={[
+                <Select styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
                   { value: 'Deployer', label: 'Deployer & Participant' },
                   { value: 'Participant', label: 'Participant' },
                 ]}></Select>
@@ -429,13 +463,14 @@ int 1
               <br></br>
               <div class="selectorbox">
               <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
-              <Select placeholder="Select TEAL contract..." onChange={this.selectTeal} options={[
+              <br></br><br></br>
+              <Select placeholder="Select TEAL contract..." styles={customStyles} onChange={this.selectTeal} options={[
                 { value: 'TEAL Contracts', label: 'TEAL Contracts' },
                 { value: 'Permissionless Voting', label: 'Permissionless Voting' },
                 { value: 'Permissioned Voting', label: 'Permissioned Voting' }
               ]}></Select>
               <br></br>
-              <Button onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
+              <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
               <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
               <div id="appArgs" style={{ display: "none" }}>
                 <label>Local Byte Slices</label><input id="lbyte"></input><br></br>
@@ -445,16 +480,17 @@ int 1
                 <p>App Args</p>
                 <textarea id="argInput">{"[\n]"}</textarea>
               </div>
+              <br></br><br></br>
+              <Button className="btn-outlinez" onClick={() => document.getElementById('file-input').click()}>Load Custom</Button>
               <p></p>
-              <br></br>
-              <Button onClick={this.deployTeal}>Deploy TEAL Contract</Button>
+
               </div>
-              <br></br><br></br><div class="selectorbox"><Input type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
+              <br></br><br></br><div class="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </PipelineShell>
             
           </td>
             <td valign="top">
-              <textarea style={{ "background-color": "black", "color": "yellow" }} id="log" readonly rows="30" cols="50">
+              <textarea style={{ "background-color": "black", "color": "yellow" }} id="log" readonly rows="65" cols="50">
                 Testing
                 hello
               </textarea>

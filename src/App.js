@@ -5,7 +5,7 @@ import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
 import algosdk from 'algosdk'
 import { CopyBlock, dracula } from 'react-code-blocks';
 import launchToken from '@reach-sh/stdlib/launchToken.mjs';
-import { Button, Select, PipelineShell, Input, Link, Flash, Textarea } from 'pipeline-ui'
+import { Button, Select, PipelineShell, Input, Link, Flash, Textarea, AlgoAddress} from 'pipeline-ui'
 
 var role = "Deployer"
 
@@ -432,8 +432,8 @@ int 1
               }>Connect</Button>
               </div>
               <br></br>
-              <div class="selectorbox">
-              <h5>{this.state.address}</h5>
+              <div className="selectorbox">
+              <AlgoAddress address={this.state.address}></AlgoAddress>
               <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
               <br></br><br></br>
               <Select placeholder="Select Reach contract..." styles={customStyles} onChange={this.select} options={[
@@ -460,7 +460,7 @@ int 1
               <Button onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
               </div>
               <br></br>
-              <div class="selectorbox">
+              <div className="selectorbox">
               <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
               <br></br><br></br>
               <Select placeholder="Select TEAL contract..." styles={customStyles} onChange={this.selectTeal} options={[

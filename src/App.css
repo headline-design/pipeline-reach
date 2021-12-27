@@ -286,6 +286,10 @@ p {
   pointer-events: none;
 }
 
+code {
+  max-width: 200px !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -322,12 +326,17 @@ textarea {
   border-radius: 4px;
 }
 
-th.prop-label {
+.prop-label {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
   line-height: 2rem;
+  text-align: center;
+  margin-bottom: 0px;
+  font-weight: 600;
+  color: rgb(63, 61, 75);
+  font-family: "Source Sans Pro", -apple-system, sans-serif;
 }
 
 @media (max-width: 900px){
@@ -352,5 +361,8 @@ td.module-right {
   .breakpoint-1 {
     display: flex !important;
     flex-direction: column;
+}
+.app {
+  padding: 1rem;
 }
 }

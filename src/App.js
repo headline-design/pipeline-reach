@@ -425,9 +425,9 @@ int 1
         </Flash>
         <table><thead></thead>
 
-          <tr className="breakpoint-1" ><td valign="top" className="module-left"><th className="prop-label">Dev Environment</th>
+          <tr className="breakpoint-1" ><td valign="top" className="module-left"><h4 className="prop-label">Dev Environment</h4>
             <div>
-              <div class="selectorbox">
+              <div className="selectorbox">
                 <Select styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
                   { value: 'TestNet', label: 'TestNet' }
                 ]}></Select>
@@ -444,7 +444,7 @@ int 1
                 <AlgoAddress address={this.state.address}></AlgoAddress>
               </div>
               <br></br>
-              <th className="prop-label">Reach Contracts</th>
+              <h4 className="prop-label">Reach Contracts</h4>
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br><br></br>
@@ -468,7 +468,7 @@ int 1
                 <Button className="furby" onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
               </div>
               <br></br>
-              <th className="prop-label">TEAL Contracts</th>
+              <h4 className="prop-label">TEAL Contracts</h4>
               <div className="selectorbox">
                 <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
                 <br></br><br></br>
@@ -497,12 +497,12 @@ int 1
                 <p></p>
 
               </div>
-              <br></br><br></br><th className="prop-label">Delete Contract</th><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
+              <br></br><br></br><h4 className="prop-label">Delete Contract</h4><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </div>
             <br></br>
-            <Button onClick={this.handleShowTeal}>{this.state.showButton}</Button>
-            <div id="tealdiv" style={{ display: "block" }}>
-              <h1 className="prop-label">TEAL Code</h1>
+            <Button className="btn-outlinez" onClick={this.handleShowTeal}>{this.state.showButton}</Button>
+            <div id="tealdiv" style={{ display: "block" }} align="left">
+              <h4 className="prop-label">TEAL Code</h4>
               <CopyBlock
                 text={this.state.teal}
                 language={"cpp"}
@@ -525,7 +525,7 @@ int 1
 
           </td>
             <td valign="top" className="module-right">
-              <th className="prop-label">Contract Details</th>
+              <h4 className="prop-label">Contract Details</h4>
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br>
@@ -542,13 +542,13 @@ int 1
                 </div>
                 <br></br>
               </div>
-              <th className="prop-label">Log</th>
+              <h4 className="prop-label">Log</h4>
               <textarea style={{ "background-color": "black", "color": "yellow", "width": "100%" }} id="log" readonly rows="65" cols="50">
                 Testing
                 hello
               </textarea>
               <br></br><br></br>
-              <th className="prop-label">Frontend Code</th>
+              <h4 className="prop-label">Frontend Code</h4>
               <CopyBlock
                 text={this.state.frontendText}
                 language={"js"}

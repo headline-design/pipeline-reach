@@ -12,17 +12,47 @@ code {
     monospace;
 }
 
+.modal-background {
+  background: #ffffff8a;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  left: 0px;
+  top: 0px;
+  z-index: 100;
+}
+
 .loader {
   border: 16px solid #f3f3f3;
+      border-top-color: rgb(243, 243, 243);
+      border-top-style: solid;
+      border-top-width: 16px;
+      border-right-color: rgb(243, 243, 243);
+      border-right-style: solid;
+      border-right-width: 16px;
+      border-bottom-color: rgb(243, 243, 243);
+      border-bottom-style: solid;
+      border-bottom-width: 16px;
+      border-left-color: rgb(243, 243, 243);
+      border-left-style: solid;
+      border-left-width: 16px;
   border-radius: 50%;
-  border-top: 16px solid blue;
-  border-right: 16px solid green;
-  border-bottom: 16px solid red;
-  border-left: 16px solid pink;
+  border-top: 16px solid #1c1ce1;
+  border-right: 16px solid #1c1ce1;
+  border-bottom: 16px solid #1c1ce1;
+  border-left: 16px solid #a4aeff;
   width: 120px;
   height: 120px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
+  animation: spin 1.4s linear infinite;
+  margin: 0 auto;
+      margin-bottom: 0px;
+  margin-top: 5%;
+}
+
+.flexy {
+  padding: 10%;
 }
 
 @-webkit-keyframes spin {

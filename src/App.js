@@ -157,7 +157,7 @@ async function getContracts() {
     let data = await fetch("reach-frontends/" + name + "Front.txt")
     contracts[reachCNames[i]].text = await data.text()
   }
-  document.getElementById("loader").style.display = "none"
+  //document.getElementById("modal-background").style.display = "none"
 }
 
 var acct = {}
@@ -408,7 +408,10 @@ int 1
   render() {
     return (
       <div className="app" align="center">
-        <div className="loader" id="loader"></div>
+        {/*}<div className="modal-background" id="modal-background"><div className="flexy">
+          <div className="loader" id="loader"></div><h1>Loading files...</h1></div>
+          
+    </div>*/}
         <h1>Smart Contract Command Lab</h1>
         <h2>What the heck is a "smart contract"?</h2>
         <p align="justify">A smart contract is a relatively simplistic TEAL (Transaction Execution Approval Language) program or "app" that exists on the blockchain network. It stores a small amount of global and local data and evaluates transactions to either approve or dissapprove them.</p>
@@ -425,9 +428,9 @@ int 1
         </Flash>
         <table><thead></thead>
 
-          <tr className="breakpoint-1" ><td valign="top" className="module-left"><h4 className="prop-label">Dev Environment</h4>
+          <tr className="breakpoint-1" ><td valign="top" className="module-left"><th className="prop-label">Dev Environment</th>
             <div>
-              <div className="selectorbox">
+              <div class="selectorbox">
                 <Select styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
                   { value: 'TestNet', label: 'TestNet' }
                 ]}></Select>
@@ -444,7 +447,7 @@ int 1
                 <AlgoAddress address={this.state.address}></AlgoAddress>
               </div>
               <br></br>
-              <h4 className="prop-label">Reach Contracts</h4>
+              <th className="prop-label">Reach Contracts</th>
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br><br></br>
@@ -468,7 +471,7 @@ int 1
                 <Button className="furby" onClick={this.attach} style={{ display: "none" }}>Attach</Button><br></br>
               </div>
               <br></br>
-              <h4 className="prop-label">TEAL Contracts</h4>
+              <th className="prop-label">TEAL Contracts</th>
               <div className="selectorbox">
                 <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
                 <br></br><br></br>
@@ -497,12 +500,12 @@ int 1
                 <p></p>
 
               </div>
-              <br></br><br></br><h4 className="prop-label">Delete Contract</h4><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
+              <br></br><br></br><th className="prop-label">Delete Contract</th><div className="selectorbox"><Input className="pipeline-input" type="number" onChange={this.inputAppId} placeholder="app id"></Input><Button className="furby" onClick={() => { deleteApp(appId) }}>Delete TEAL Contract</Button></div>
             </div>
             <br></br>
-            <Button className="btn-outlinez" onClick={this.handleShowTeal}>{this.state.showButton}</Button>
-            <div id="tealdiv" style={{ display: "block" }} align="left">
-              <h4 className="prop-label">TEAL Code</h4>
+            <Button onClick={this.handleShowTeal}>{this.state.showButton}</Button>
+            <div id="tealdiv" style={{ display: "block" }}>
+              <h1 className="prop-label">TEAL Code</h1>
               <CopyBlock
                 text={this.state.teal}
                 language={"cpp"}
@@ -517,6 +520,7 @@ int 1
                   align: "left",
                   padding: "unset",
                   background: "#fff",
+                  textAlign: "left",
                   backgroundColor: "#fff",
                   borderColor: "#D7DAE0",
                 }}
@@ -525,7 +529,7 @@ int 1
 
           </td>
             <td valign="top" className="module-right">
-              <h4 className="prop-label">Contract Details</h4>
+              <th className="prop-label">Contract Details</th>
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br>
@@ -542,13 +546,13 @@ int 1
                 </div>
                 <br></br>
               </div>
-              <h4 className="prop-label">Log</h4>
+              <th className="prop-label">Log</th>
               <textarea style={{ "background-color": "black", "color": "yellow", "width": "100%" }} id="log" readonly rows="65" cols="50">
                 Testing
                 hello
               </textarea>
               <br></br><br></br>
-              <h4 className="prop-label">Frontend Code</h4>
+              <th className="prop-label">Frontend Code</th>
               <CopyBlock
                 text={this.state.frontendText}
                 language={"js"}

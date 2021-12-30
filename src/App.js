@@ -15,10 +15,6 @@ const customStyles = {
     backgroundColor: state.isSelected ? "#d1d1fa" : "#ffffff00",
     color: state.isSelected ? 'black' : 'rgb(51, 54, 61)',
     cursor: "pointer",
-    isActive: true,
-    autoFocus: true,
-    isFixed: true
-
 
   }),
   control: () => ({
@@ -582,7 +578,7 @@ int 1
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br><br></br>
-                <Select placeholder="Select Reach contract..." onChange={this.select} options={[
+                <Select placeholder="Select Reach contract..." styles={customStyles}  onChange={this.select} options={[
                   { value: 'Reach Contracts', label: 'Reach Contracts' },
                   { value: 'Morra Game', label: 'Morra Game' },
                   { value: 'Popularity Contest', label: 'Popularity Contest' },

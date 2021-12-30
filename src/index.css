@@ -86,7 +86,7 @@ div[class*=pipeline-select]>div {
   margin-bottom: .5rem
 }
 
-div#react-select-3-option-0:active,div#react-select-5-option-0:active,div#react-select-5-option-1:active,div#react-select-5-option-2:active,div#react-select-5-option-3:active,div#react-select-5-option-4:active,div#react-select-5-option-5:active,div#react-select-7-option-0:active,div#react-select-7-option-1:active,div#react-select-9-option-0:active,div#react-select-9-option-1:active,div#react-select-9-option-2:active,div#react-select-9-option-3:active {
+div#react-select-2-option-0:active,div#react-select-3-option-0:active,div#react-select-3-option-1:active,div#react-select-3-option-2:active,div#react-select-3-option-3:active,div#react-select-3-option-4:active,div#react-select-3-option-5:active,div#react-select-4-option-0:active,div#react-select-4-option-1:active,div#react-select-5-option-0:active,div#react-select-5-option-1:active,div#react-select-5-option-2:active,div#react-select-5-option-3:active,div#react-select-5-option-4:active,div#react-select-5-option-5:active,div#react-select-7-option-0:active,div#react-select-7-option-1:active,div#react-select-9-option-0:active,div#react-select-9-option-1:active,div#react-select-9-option-2:active,div#react-select-9-option-3:active {
   background-color: #d1d1fa!important;
   margin-top: 0;
   font-weight: 600;
@@ -222,7 +222,7 @@ div[class*=pipeline-select]>div:active {
   background-color: rgb(242 242 242)
 }
 
-div#react-select-3-option-0:hover, div#react-select-3-option-1:hover,div#react-select-4-option-0:hover,div#react-select-4-option-1:hover,div#react-select-4-option-2:hover,div#react-select-5-option-0:hover,div#react-select-5-option-1:hover,div#react-select-5-option-2:hover,div#react-select-5-option-3:hover,div#react-select-5-option-4:hover,div#react-select-5-option-5:hover,div#react-select-7-option-0:hover,div#react-select-7-option-1:hover,div#react-select-9-option-0:hover,div#react-select-9-option-1:hover,div#react-select-9-option-2:hover,div#react-select-9-option-3:hover {
+div#react-select-2-option-0:hover,div#react-select-3-option-0:hover,div#react-select-3-option-1:hover,div#react-select-3-option-2:hover,div#react-select-3-option-3:hover,div#react-select-3-option-4:hover,div#react-select-3-option-5:hover,div#react-select-4-option-0:hover,div#react-select-4-option-1:hover,div#react-select-5-option-0:hover,div#react-select-5-option-1:hover,div#react-select-5-option-2:hover,div#react-select-5-option-3:hover,div#react-select-5-option-4:hover,div#react-select-5-option-5:hover,div#react-select-7-option-0:hover,div#react-select-7-option-1:hover,div#react-select-9-option-0:hover,div#react-select-9-option-1:hover,div#react-select-9-option-2:hover,div#react-select-9-option-3:hover {
   background-color: #e2e2fb;
   margin-top: 0;
   font-weight: 600;

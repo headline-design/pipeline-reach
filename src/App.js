@@ -421,8 +421,8 @@ int 1
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       id="Capa_1"
-      width="80"
-      height="80"
+      width="70"
+      height="70"
       viewBox="0 0 510 510"
     >
       <linearGradient id="lg1">
@@ -542,7 +542,7 @@ int 1
         d="M160.023 265.81a45.143 45.143 0 0022.571 39.095l49.833 28.773a45.144 45.144 0 0045.146 0l49.833-28.773a45.143 45.143 0 0022.571-39.095V168.7a129.086 129.086 0 00-20.446-18.192c-5.799-4.143-13.861.054-13.861 7.181v84.713a28.84 28.84 0 01-14.418 24.974l-31.833 18.38a28.837 28.837 0 01-28.839 0l-31.833-18.38a28.837 28.837 0 01-14.418-24.974v-84.71c0-7.164-8.102-11.303-13.928-7.135a129.056 129.056 0 00-20.379 18.142v97.111z"
       ></path>
     </svg>
-<h1 className="bolierplate-h1">REACH&nbsp;</h1></div><div className="boiler-border"></div>
+<h1 className="bolierplate-h1-2">REACH</h1></div><div className="boiler-border"></div>
 
         <h1 className="boiler-h1-2">What is a "smart contract"?</h1>
         <p align="justify">A smart contract is a relatively simplistic TEAL (Transaction Execution Approval Language) program or "app" that exists on the blockchain network. It stores a small amount of global and local data and evaluates transactions to either approve or dissapprove them.</p>
@@ -582,7 +582,7 @@ int 1
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br><br></br>
-                <Select placeholder="Select Reach contract..." styles={customStyles} onChange={this.select} options={[
+                <Select placeholder="Select Reach contract..." onChange={this.select} options={[
                   { value: 'Reach Contracts', label: 'Reach Contracts' },
                   { value: 'Morra Game', label: 'Morra Game' },
                   { value: 'Popularity Contest', label: 'Popularity Contest' },

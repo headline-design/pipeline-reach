@@ -1,4 +1,4 @@
-import './App.css';
+//import './App.css';
 import React, { Component } from 'react';
 import { loadStdlib } from '@reach-sh/stdlib'
 import MyAlgoConnect from '@reach-sh/stdlib/ALGO_MyAlgoConnect';
@@ -12,7 +12,7 @@ var role = "Deployer"
 const customStyles = {
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isSelected ? "#d1d1fa" : "#ffffff00",
+    backgroundColor: state.isSelected ? "d1d1fa" : state.isFocused? "#e2e2fb" : "#ffffff00",
     color: state.isSelected ? 'black' : 'rgb(51, 54, 61)',
     cursor: "pointer",
 
@@ -216,6 +216,7 @@ class App extends Component {
 
   select = (event) => {
     document.getElementById("appArgs").style.display = "none"
+    if (event.value === "NFT Auction") {alert("WARNING! This demo Reach contract will not run to completion. Only use with a disposable Algorand address.")}
     if (event.value !== "Reach Contracts") {
       backend = contracts[event.value].contract;
       window.backend = backend;
@@ -558,7 +559,7 @@ int 1
            
             <div>
               <div className="selectorbox">
-                <Select styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
+                <Select isSearchable={false} styles={customStyles} width='200px' menuColor='red' id="net" placeholder="Select Net..." onChange={this.toggleNet} options={[
                   { value: 'TestNet', label: 'TestNet' }
                 ]}></Select>
 
@@ -578,7 +579,7 @@ int 1
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br><br></br>
-                <Select placeholder="Select Reach contract..." styles={customStyles}  onChange={this.select} options={[
+                <Select isSearchable={false} placeholder="Select Reach contract..." styles={customStyles}  onChange={this.select} options={[
                   { value: 'Reach Contracts', label: 'Reach Contracts' },
                   { value: 'Morra Game', label: 'Morra Game' },
                   { value: 'Popularity Contest', label: 'Popularity Contest' },
@@ -586,7 +587,7 @@ int 1
                   { value: 'NFT Auction', label: 'NFT Auction' }
                 ]}></Select>
                 <div id="roles" style={{ display: "none" }}>
-                  <Select styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
+                  <Select isSearchable={false} styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
                     { value: 'Deployer', label: 'Deployer & Participant' },
                     { value: 'Participant', label: 'Participant' },
                   ]}></Select>
@@ -602,7 +603,7 @@ int 1
               <div className="selectorbox">
                 <Link href="https://github.com/algorand/smart-contracts/tree/master/devrel" target="_blank" >Github Source</Link>
                 <br></br><br></br>
-                <Select placeholder="Select TEAL contract..." styles={customStyles} onChange={this.selectTeal} options={[
+                <Select isSearchable={false} placeholder="Select TEAL contract..." styles={customStyles} onChange={this.selectTeal} options={[
                   { value: 'TEAL Contracts', label: 'TEAL Contracts' },
                   { value: 'Permissionless Voting', label: 'Permissionless Voting' },
                   { value: 'Permissioned Voting', label: 'Permissioned Voting' }
@@ -661,7 +662,7 @@ int 1
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br>
                 <div id="roles" style={{ display: "none" }}>
-                  <Select styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
+                  <Select isSearchable={false} styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
                     { value: 'Deployer', label: 'Deployer & Participant' },
                     { value: 'Participant', label: 'Participant' },
                   ]}></Select>

@@ -359,6 +359,33 @@ class App extends Component {
     }
   }
 
+  async optIn() {
+    let algodClient = ""
+
+    if (net === "TestNet") {
+      algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+    }
+    else {
+      algodClient = new algosdk.Algodv2("", 'https://algoexplorerapi.io', '');
+    }
+
+    const params = await algodClient.getTransactionParams().do();
+
+    let txn = algosdk.makeApplicationOptInTxnFromObject({
+      suggestedParams: {
+        ...params,
+      },
+      from: sender,
+      appIndex: parseInt(document.getElementById("optid").value),
+    });
+
+    let signedTxn = await wallet.signTransaction(txn.toByte());
+      console.log(signedTxn)
+      let response = await algodClient.sendRawTransaction(signedTxn.blob).do();
+      window.reachLog += ("\n" + "TXN ID: " + response.txId)
+      console.log(response)
+  }
+
   inputAppId(event) {
     appId = event.target.value
     console.log(appId)
@@ -548,7 +575,7 @@ int 1
         <h2>Why use this tool?</h2>
         <p align="justify">Currently, TEAL contract creation has minimal support for client-only JavaScript, the <i>lingua franca</i> of the decentralized online world. Creating and deploying smart contracts requires downloading and running numerous third-party software packages, using esoteric single-use languages and working with intimidating command line tools. in In order to boost decentralization and broad adoption, we are working towards complete browser-only backend-free  solutions to creation, deployment and integration.</p>
         <h2>Instructions</h2>
-        <p align="justify">After connecting to your wallet, select a contract and deploy! The Reach Button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions (with the exception of the Morra Game, which we working to adapt for simultaneously interaction between multiple real-world participants). For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds. To fund your testnet account, simply visit: <Link href="https://testnet.algoexplorer.io/dispenser" target="_blank" title="Algo Dispenser">
+        <p align="justify">After connecting to your wallet, select a contract and deploy! The Reach Button will both deploy the contract and run the "frontend" code below, with your address simulating all participant interactions (with the exception of the Morra Game, which we have modified to enable interation between two real-world participants/addresses). For real-world use, the code specific to each participant must be isolated from this code and run with different accounts. Exercise extreme caution with mainNet, as your account may be drained. On testnet, attempting to create more than 10 smart contracts will fail. Other failures will be triggered by not having your wallet set to testnet, or not having enough funds. To fund your testnet account, simply visit: <Link href="https://testnet.algoexplorer.io/dispenser" target="_blank" title="Algo Dispenser">
           the AlgoExplorer Dispenser
         </Link></p>
         <Flash my={3} variant="danger">
@@ -579,12 +606,12 @@ int 1
               <div className="selectorbox">
                 <Link href="https://github.com/reach-sh/reach-lang/tree/master/examples" target="_blank" >Github Source</Link>
                 <br></br><br></br>
-                <Select isSearchable={false} placeholder="Select Reach contract..." styles={customStyles}  onChange={this.select} options={[
+                <Select isSearchable={false} placeholder="Select Reach contract..." styles={customStyles}  onChange={this.select} isOptionDisabled={(option) => option.disabled} options={[
                   { value: 'Reach Contracts', label: 'Reach Contracts' },
                   { value: 'Morra Game', label: 'Morra Game' },
                   { value: 'Popularity Contest', label: 'Popularity Contest' },
                   { value: 'Dan Storage', label: 'Dan Storage' },
-                  { value: 'NFT Auction', label: 'NFT Auction' }
+                  { value: 'NFT Auction', label: 'NFT Auction (coming soon?)', disabled: true}
                 ]}></Select>
                 <div id="roles" style={{ display: "none" }}>
                   <Select isSearchable={false} styles={customStyles} placeholder="Select role..." onChange={this.selectRole} options={[
@@ -619,7 +646,9 @@ int 1
                     <textarea placeholder="Global Integers" className="pipeline-input" defaultValue={"[\n]"} id="argInput"></textarea>
                   </div>
                 </div>
-                <Button className="furby" onClick={this.deployTeal}>Deploy TEAL Contract</Button>
+                <Button className="furby" onClick={this.deployTeal}>Deploy TEAL Contract</Button><p></p>
+                <Button onClick={this.optIn}>TEAL OPT-IN</Button><span> </span>
+                <input id="optid" placeholder="App id" type="number"></input>
                 <input id="file-input" type="file" onChange={this.loadTeal} style={{ display: " none" }} />
 
 

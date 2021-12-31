@@ -64,7 +64,7 @@ export async function run() {
           log(`\n${who} owns it\n`);
           if ( trades[who] == 2 ) {
             log(`${who} stops`);
-            process.exit(0);
+            throw("this.sucks(true)")
           } else {
             trades[who] += 1;
           }

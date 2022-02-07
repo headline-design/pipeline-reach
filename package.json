@@ -2,6 +2,7 @@
   "name": "pipeline-reach",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@pipeline-ui-2/pipeline": "^1.2.7",
     "@reach-sh/stdlib": "^0.1.7-rc.3",
